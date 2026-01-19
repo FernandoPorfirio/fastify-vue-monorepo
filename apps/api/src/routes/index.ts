@@ -4,6 +4,7 @@ import healthRoutes from './health'
 import { authRoutes } from '../modules/auth'
 import { userRoutes } from '../modules/user'
 import { inviteRoutes } from '../modules/invite'
+import { tenantRoutes } from '../modules/tenant'
 
 export async function registerRoutes(app: FastifyInstance) {
   // API Documentation
@@ -16,4 +17,5 @@ export async function registerRoutes(app: FastifyInstance) {
   await app.register(authRoutes)
   await app.register(userRoutes)
   await app.register(inviteRoutes)
+  await app.register(tenantRoutes)
 }
