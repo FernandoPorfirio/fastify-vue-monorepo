@@ -30,6 +30,16 @@ async function authPlugin(app: FastifyInstance) {
       }
 
       const token = authHeader.substring(7)
+      
+      // Verificar se o token não está vazio
+      if (!token) {
+        return reply.status(401).send({
+          statusCode: 401,
+          error: 'Unauthorized',
+          message: 'Token is required',
+        })
+      }
+      
       const payload = verifyToken(token)
 
       // Buscar tenant e perfis do usuário
