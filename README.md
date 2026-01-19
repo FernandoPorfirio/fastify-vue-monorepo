@@ -64,6 +64,8 @@ pnpm dev
 
 ## Comandos Úteis
 
+> Todos os comandos abaixo podem ser executados da raiz do monorepo
+
 ### Docker
 ```bash
 # Iniciar banco de dados
@@ -81,8 +83,6 @@ docker-compose down -v
 
 ### Migrations
 ```bash
-cd apps/migrations
-
 # Criar nova migration
 pnpm migrate:make nome_da_migration
 
@@ -98,18 +98,19 @@ pnpm seed:run
 
 ### API
 ```bash
-cd apps/api
-
 # Desenvolvimento com hot reload
-pnpm dev
+pnpm dev:api
 
-# Build para produção
-pnpm build
+# Build para produção (dentro de apps/api)
+cd apps/api && pnpm build
 
-# Executar build
-pnpm start
+# Executar build (dentro de apps/api)
+cd apps/api && pnpm start
 
-# Formatar código
+# Formatar código da API
+pnpm format:api
+
+# Formatar todo o monorepo
 pnpm format
 ```
 
