@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "migrate:make": "knex migrate:make",
-    "migrate:latest": "knex migrate:latest",
-    "migrate:rollback": "knex migrate:rollback",
-    "seed:run": "knex seed:run"
+    "migrate:make": "knex --env-file=.env migrate:make",
+    "migrate:latest": "knex --env-file=.env migrate:latest",
+    "migrate:rollback": "knex --env-file=.env migrate:rollback",
+    "seed:run": "knex --env-file=.env seed:run"
   },
   "keywords": [],
   "author": "",
