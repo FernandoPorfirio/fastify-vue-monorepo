@@ -5,6 +5,7 @@ import { authRoutes } from '../modules/auth'
 import { userRoutes } from '../modules/user'
 import { inviteRoutes } from '../modules/invite'
 import { tenantRoutes } from '../modules/tenant'
+import { profileRoutes } from '../modules/profile'
 
 export async function registerRoutes(app: FastifyInstance) {
   // API Documentation
@@ -18,4 +19,5 @@ export async function registerRoutes(app: FastifyInstance) {
   await app.register(userRoutes)
   await app.register(inviteRoutes)
   await app.register(tenantRoutes)
+  await app.register(profileRoutes)
 }
