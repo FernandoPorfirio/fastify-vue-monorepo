@@ -8,6 +8,7 @@ import {
 import { fastifySwagger } from '@fastify/swagger'
 import { fastifyCors } from '@fastify/cors'
 import { errorHandler } from './errors/handler'
+import authPlugin from './plugins/auth'
 import { registerRoutes } from './routes'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
@@ -16,10 +17,11 @@ app.setValidatorCompiler(validatorCompiler)
 app.setSerializerCompiler(serializerCompiler)
 app.setErrorHandler(errorHandler)
 
+app.register(authPlugin)
+
 app.register(fastifyCors, {
   origin: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  // credentials: true
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS']
 })
 
 app.register(fastifySwagger, {
