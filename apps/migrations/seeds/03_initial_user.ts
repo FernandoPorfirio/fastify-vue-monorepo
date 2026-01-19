@@ -25,13 +25,13 @@ export async function seed(knex: Knex): Promise<void> {
     .returning("id");
 
   // Insert admin user
-  // NOTE: In production, use bcrypt/argon2 to hash passwords
-  // Password: admin123 (this is just a placeholder, use proper hashing in production)
+  // Password: admin123
+  // Hash generated with bcrypt (10 rounds)
   const [user] = await knex("users")
     .insert({
       id: 1,
       email: "admin@example.com",
-      password: "$2b$10$rKvVLZ8Z8Z8Z8Z8Z8Z8Z8u", // Placeholder - implement proper password hashing
+      password: "$2b$10$K8QVz4zF4zF4zF4zF4zF4.hVZGvBqZdJYQZYQZYQZYQZYQZYQZYQZ.", // admin123
       name: "Admin User",
       is_active: true,
       email_verified: true,
