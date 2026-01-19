@@ -4,6 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev:api": "pnpm --filter api dev",
+    "start:api": "pnpm --filter api start",
+    "format:api": "pnpm --filter api format",
+    "migrate:make": "pnpm --filter migrations migrate:make",
+    "migrate:latest": "pnpm --filter migrations migrate:latest",
+    "migrate:rollback": "pnpm --filter migrations migrate:rollback",
+    "seed:run": "pnpm --filter migrations seed:run",
+    "format": "biome format --write .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
