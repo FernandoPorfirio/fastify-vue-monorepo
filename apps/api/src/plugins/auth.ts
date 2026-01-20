@@ -10,6 +10,11 @@ declare module 'fastify' {
       profileIds: number[]
     }
   }
+  interface FastifyInstance {
+    authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>
+    checkPermission: (request: FastifyRequest, reply: FastifyReply) => Promise<void>
+    authorize: (routePath: string, method?: string) => (request: FastifyRequest, reply: FastifyReply) => Promise<void>
+  }
 }
 
 async function authPlugin(app: FastifyInstance) {
@@ -78,45 +83,75 @@ async function authPlugin(app: FastifyInstance) {
     }
   })
 
-  // Decorator para verificar permissão de rota
-  app.decorate(
-    'authorize',
-    (routePath: string, method: string = 'GET') => {
-      return async (request: FastifyRequest, reply: FastifyReply) => {
-        if (!request.user) {
-          return reply.status(401).send({
-            statusCode: 401,
-            error: 'Unauthorized',
-            message: 'Authentication required',
-          })
-        }
-
-        // Buscar a rota no banco
-        const route = await db('routes')
-          .where({ path: routePath, method: method.toUpperCase(), is_active: true })
-          .first()
-
-        if (!route) {
-          // Se a rota não está cadastrada, permite acesso
-          return
-        }
-
-        // Verificar se algum dos perfis do usuário tem acesso à rota
-        const hasAccess = await db('profile_routes')
-          .whereIn('profile_id', request.user.profileIds)
-          .where('route_id', route.id)
-          .first()
-
-        if (!hasAccess) {
-          return reply.status(403).send({
-            statusCode: 403,
-            error: 'Forbidden',
-            message: 'Insufficient permissions',
-          })
-        }
-      }
+  // Middleware RBAC automático - verifica permissão baseado na rota da requisição
+  app.decorate('checkPermission', async (
+    request: FastifyRequest,
+    reply: FastifyReply
+  ) => {
+    // Verificar se usuário está autenticado
+    if (!request.user) {
+      return reply.status(401).send({
+        statusCode: 401,
+        error: 'Unauthorized',
+        message: 'Authentication required',
+      })
     }
-  )
+
+    // Extrair path e method da requisição
+    const requestPath = request.routeOptions.url || request.url
+    const requestMethod = request.method.toUpperCase()
+
+    // Buscar a rota no banco de dados
+    const route = await db('routes')
+      .where({ 
+        path: requestPath, 
+        method: requestMethod,
+        type: 'api',
+        is_active: true 
+      })
+      .whereNull('deleted_at')
+      .first()
+
+    // Se a rota não está cadastrada no sistema, permite acesso
+    if (!route) {
+      app.log.debug({ path: requestPath, method: requestMethod }, 'Route not found in database, allowing access')
+      return
+    }
+
+    // Verificar se algum dos perfis do usuário tem acesso à rota
+    const hasAccess = await db('profile_routes')
+      .whereIn('profile_id', request.user.profileIds)
+      .where('route_id', route.id)
+      .where('is_active', true)
+      .first()
+
+    if (!hasAccess) {
+      app.log.warn(
+        { 
+          userId: request.user.userId, 
+          profileIds: request.user.profileIds,
+          route: requestPath,
+          method: requestMethod
+        }, 
+        'Access denied - User does not have permission'
+      )
+      
+      return reply.status(403).send({
+        statusCode: 403,
+        error: 'Forbidden',
+        message: 'You do not have permission to access this resource',
+      })
+    }
+
+    app.log.debug(
+      { 
+        userId: request.user.userId, 
+        profileIds: request.user.profileIds,
+        route: requestPath 
+      }, 
+      'Access granted'
+    )
+  })
 }
 
 export default fp(authPlugin)
