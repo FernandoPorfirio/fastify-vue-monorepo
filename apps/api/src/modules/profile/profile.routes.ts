@@ -6,6 +6,7 @@ import { ProfileController } from './profile.controller'
 declare module 'fastify' {
   interface FastifyInstance {
     authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>
+    checkPermission: (request: FastifyRequest, reply: FastifyReply) => Promise<void>
   }
 }
 
@@ -16,7 +17,7 @@ const profileRoutes: FastifyPluginAsyncZod = async (app) => {
   app.post(
     '/profile',
     {
-      onRequest: [app.authenticate],
+      onRequest: [app.authenticate, app.checkPermission],
       schema: {
         tags: ['Profile'],
         description: 'Create a new profile',
@@ -49,7 +50,7 @@ const profileRoutes: FastifyPluginAsyncZod = async (app) => {
   app.get(
     '/profile/:id',
     {
-      onRequest: [app.authenticate],
+      onRequest: [app.authenticate, app.checkPermission],
       schema: {
         tags: ['Profile'],
         description: 'Get profile by ID',
@@ -86,7 +87,7 @@ const profileRoutes: FastifyPluginAsyncZod = async (app) => {
   app.get(
     '/profile',
     {
-      onRequest: [app.authenticate],
+      onRequest: [app.authenticate, app.checkPermission],
       schema: {
         tags: ['Profile'],
         description: 'List all profiles with optional filters',
@@ -117,7 +118,7 @@ const profileRoutes: FastifyPluginAsyncZod = async (app) => {
   app.patch(
     '/profile/:id',
     {
-      onRequest: [app.authenticate],
+      onRequest: [app.authenticate, app.checkPermission],
       schema: {
         tags: ['Profile'],
         description: 'Update profile',
@@ -154,7 +155,7 @@ const profileRoutes: FastifyPluginAsyncZod = async (app) => {
   app.delete(
     '/profile/:id',
     {
-      onRequest: [app.authenticate],
+      onRequest: [app.authenticate, app.checkPermission],
       schema: {
         tags: ['Profile'],
         description: 'Soft delete profile',
@@ -185,7 +186,7 @@ const profileRoutes: FastifyPluginAsyncZod = async (app) => {
   app.post(
     '/profile/:id/user',
     {
-      onRequest: [app.authenticate],
+      onRequest: [app.authenticate, app.checkPermission],
       schema: {
         tags: ['Profile'],
         description: 'Add user to profile (requires tenant context)',
@@ -215,7 +216,7 @@ const profileRoutes: FastifyPluginAsyncZod = async (app) => {
   app.delete(
     '/profile/:id/user',
     {
-      onRequest: [app.authenticate],
+      onRequest: [app.authenticate, app.checkPermission],
       schema: {
         tags: ['Profile'],
         description: 'Remove user from profile (requires tenant context)',

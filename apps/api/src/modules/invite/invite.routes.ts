@@ -6,6 +6,7 @@ import { InviteController } from './invite.controller'
 declare module 'fastify' {
   interface FastifyInstance {
     authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>
+    checkPermission: (request: FastifyRequest, reply: FastifyReply) => Promise<void>
   }
 }
 
@@ -16,7 +17,7 @@ const inviteRoutes: FastifyPluginAsyncZod = async (app) => {
   app.post(
     '/invite',
     {
-      onRequest: [app.authenticate],
+      onRequest: [app.authenticate, app.checkPermission],
       schema: {
         tags: ['Invite'],
         description: 'Create a new user invite',

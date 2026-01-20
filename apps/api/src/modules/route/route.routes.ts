@@ -6,6 +6,7 @@ import { RouteController } from './route.controller'
 declare module 'fastify' {
   interface FastifyInstance {
     authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>
+    checkPermission: (request: FastifyRequest, reply: FastifyReply) => Promise<void>
   }
 }
 
@@ -16,7 +17,7 @@ const routeRoutes: FastifyPluginAsyncZod = async (app) => {
   app.post(
     '/route',
     {
-      onRequest: [app.authenticate],
+      onRequest: [app.authenticate, app.checkPermission],
       schema: {
         tags: ['Route'],
         description: 'Create a new route',
@@ -55,7 +56,7 @@ const routeRoutes: FastifyPluginAsyncZod = async (app) => {
   app.get(
     '/route/:id',
     {
-      onRequest: [app.authenticate],
+      onRequest: [app.authenticate, app.checkPermission],
       schema: {
         tags: ['Route'],
         description: 'Get route by ID',
@@ -95,7 +96,7 @@ const routeRoutes: FastifyPluginAsyncZod = async (app) => {
   app.get(
     '/route',
     {
-      onRequest: [app.authenticate],
+      onRequest: [app.authenticate, app.checkPermission],
       schema: {
         tags: ['Route'],
         description: 'List all routes with optional filters',
@@ -131,7 +132,7 @@ const routeRoutes: FastifyPluginAsyncZod = async (app) => {
   app.patch(
     '/route/:id',
     {
-      onRequest: [app.authenticate],
+      onRequest: [app.authenticate, app.checkPermission],
       schema: {
         tags: ['Route'],
         description: 'Update route',
@@ -174,7 +175,7 @@ const routeRoutes: FastifyPluginAsyncZod = async (app) => {
   app.delete(
     '/route/:id',
     {
-      onRequest: [app.authenticate],
+      onRequest: [app.authenticate, app.checkPermission],
       schema: {
         tags: ['Route'],
         description: 'Soft delete route',
@@ -205,7 +206,7 @@ const routeRoutes: FastifyPluginAsyncZod = async (app) => {
   app.post(
     '/route/:id/profile',
     {
-      onRequest: [app.authenticate],
+      onRequest: [app.authenticate, app.checkPermission],
       schema: {
         tags: ['Route'],
         description: 'Add profile to route (grant access)',
@@ -234,7 +235,7 @@ const routeRoutes: FastifyPluginAsyncZod = async (app) => {
   app.delete(
     '/route/:id/profile',
     {
-      onRequest: [app.authenticate],
+      onRequest: [app.authenticate, app.checkPermission],
       schema: {
         tags: ['Route'],
         description: 'Remove profile from route (revoke access)',

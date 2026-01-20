@@ -6,6 +6,7 @@ import { AuthController } from './auth.controller'
 declare module 'fastify' {
   interface FastifyInstance {
     authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>
+    checkPermission: (request: FastifyRequest, reply: FastifyReply) => Promise<void>
   }
 }
 

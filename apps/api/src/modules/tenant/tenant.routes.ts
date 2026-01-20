@@ -6,6 +6,7 @@ import { TenantController } from './tenant.controller'
 declare module 'fastify' {
   interface FastifyInstance {
     authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>
+    checkPermission: (request: FastifyRequest, reply: FastifyReply) => Promise<void>
   }
 }
 
@@ -16,7 +17,7 @@ const tenantRoutes: FastifyPluginAsyncZod = async (app) => {
   app.post(
     '/tenant',
     {
-      onRequest: [app.authenticate],
+      onRequest: [app.authenticate, app.checkPermission],
       schema: {
         tags: ['Tenant'],
         description: 'Create a new tenant',
@@ -58,7 +59,7 @@ const tenantRoutes: FastifyPluginAsyncZod = async (app) => {
   app.get(
     '/tenant/:id',
     {
-      onRequest: [app.authenticate],
+      onRequest: [app.authenticate, app.checkPermission],
       schema: {
         tags: ['Tenant'],
         description: 'Get tenant by ID',
@@ -100,7 +101,7 @@ const tenantRoutes: FastifyPluginAsyncZod = async (app) => {
   app.get(
     '/tenant',
     {
-      onRequest: [app.authenticate],
+      onRequest: [app.authenticate, app.checkPermission],
       schema: {
         tags: ['Tenant'],
         description: 'List all tenants with optional filters',
@@ -137,7 +138,7 @@ const tenantRoutes: FastifyPluginAsyncZod = async (app) => {
   app.patch(
     '/tenant/:id',
     {
-      onRequest: [app.authenticate],
+      onRequest: [app.authenticate, app.checkPermission],
       schema: {
         tags: ['Tenant'],
         description: 'Update tenant',
@@ -185,7 +186,7 @@ const tenantRoutes: FastifyPluginAsyncZod = async (app) => {
   app.delete(
     '/tenant/:id',
     {
-      onRequest: [app.authenticate],
+      onRequest: [app.authenticate, app.checkPermission],
       schema: {
         tags: ['Tenant'],
         description: 'Soft delete tenant',
@@ -216,7 +217,7 @@ const tenantRoutes: FastifyPluginAsyncZod = async (app) => {
   app.post(
     '/tenant/:id/user',
     {
-      onRequest: [app.authenticate],
+      onRequest: [app.authenticate, app.checkPermission],
       schema: {
         tags: ['Tenant'],
         description: 'Add user to tenant',
@@ -245,7 +246,7 @@ const tenantRoutes: FastifyPluginAsyncZod = async (app) => {
   app.delete(
     '/tenant/:id/user',
     {
-      onRequest: [app.authenticate],
+      onRequest: [app.authenticate, app.checkPermission],
       schema: {
         tags: ['Tenant'],
         description: 'Remove user from tenant',
