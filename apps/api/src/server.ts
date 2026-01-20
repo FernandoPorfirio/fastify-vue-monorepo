@@ -7,6 +7,7 @@ import {
 } from 'fastify-type-provider-zod'
 import { fastifySwagger } from '@fastify/swagger'
 import { fastifyCors } from '@fastify/cors'
+import fastifyHelmet from '@fastify/helmet'
 import { errorHandler } from './errors/handler'
 import authPlugin from './plugins/auth'
 import rateLimitPlugin from './plugins/rate-limit'
@@ -18,7 +19,27 @@ app.setValidatorCompiler(validatorCompiler)
 app.setSerializerCompiler(serializerCompiler)
 app.setErrorHandler(errorHandler)
 
-// Registrar Rate Limiting primeiro (antes de auth e rotas)
+// Helmet - Segurança com headers HTTP
+app.register(fastifyHelmet, {
+  global: true,
+
+  // API não serve HTML → CSP desnecessário
+  contentSecurityPolicy: false,
+
+  // Evita iframe (clickjacking)
+  frameguard: { action: 'deny' },
+
+  // Evita MIME sniffing
+  noSniff: true,
+
+  // HTTPS only (ativar só em produção)
+  hsts: process.env.NODE_ENV === 'production',
+
+  // Não vazar referrer
+  referrerPolicy: { policy: 'no-referrer' },
+})
+
+// Rate Limiting
 app.register(rateLimitPlugin)
 
 app.register(authPlugin)
