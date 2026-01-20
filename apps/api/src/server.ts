@@ -9,6 +9,7 @@ import { fastifySwagger } from '@fastify/swagger'
 import { fastifyCors } from '@fastify/cors'
 import { errorHandler } from './errors/handler'
 import authPlugin from './plugins/auth'
+import rateLimitPlugin from './plugins/rate-limit'
 import { registerRoutes } from './routes'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
@@ -16,6 +17,9 @@ const app = fastify().withTypeProvider<ZodTypeProvider>()
 app.setValidatorCompiler(validatorCompiler)
 app.setSerializerCompiler(serializerCompiler)
 app.setErrorHandler(errorHandler)
+
+// Registrar Rate Limiting primeiro (antes de auth e rotas)
+app.register(rateLimitPlugin)
 
 app.register(authPlugin)
 
