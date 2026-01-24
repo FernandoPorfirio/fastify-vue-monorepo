@@ -17,6 +17,23 @@ const config: { [key: string]: Knex.Config } = {
     seeds: {
       directory: './seeds'
     }
+  },
+  
+  test: {
+    client: 'pg',
+    connection: {
+      host: process.env.TEST_DB_HOST || 'localhost',
+      user: process.env.TEST_DB_USER || 'postgres',
+      password: process.env.TEST_DB_PASS || 'postgres',
+      database: process.env.TEST_DB_NAME || 'test_db'
+    },
+    migrations: {
+      directory: './migrations',
+      tableName: 'knex_migrations'
+    },
+    seeds: {
+      directory: './seeds'
+    }
   }
 };
 
