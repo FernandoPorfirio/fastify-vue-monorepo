@@ -56,7 +56,7 @@ export class TenantService {
       }
     }
 
-    const [tenantId] = await db('tenants')
+    const [tenant] = await db('tenants')
       .insert({
         name: input.name,
         slug: input.slug,
@@ -71,11 +71,25 @@ export class TenantService {
       })
       .returning('id')
 
-    return this.findById(tenantId)
+    return this.findById(tenant.id)
   }
 
   async findById(tenantId: number) {
     const tenant = await db('tenants')
+      .select(
+        'id',
+        'external_reference',
+        'name',
+        'slug',
+        'domain',
+        'plan',
+        'owner_email',
+        'max_users',
+        'is_active',
+        'is_trial',
+        'created_at',
+        'updated_at'
+      )
       .where({ id: tenantId })
       .whereNull('deleted_at')
       .first()
@@ -84,7 +98,12 @@ export class TenantService {
       return null
     }
 
-    return tenant
+    // Convert dates to ISO strings for JSON serialization
+    return {
+      ...tenant,
+      created_at: tenant.created_at?.toISOString(),
+      updated_at: tenant.updated_at?.toISOString(),
+    }
   }
 
   async findAll(filters?: {
@@ -94,6 +113,20 @@ export class TenantService {
     offset?: number
   }) {
     let query = db('tenants')
+      .select(
+        'id',
+        'external_reference',
+        'name',
+        'slug',
+        'domain',
+        'plan',
+        'owner_email',
+        'max_users',
+        'is_active',
+        'is_trial',
+        'created_at',
+        'updated_at'
+      )
       .whereNull('deleted_at')
       .orderBy('created_at', 'desc')
 
@@ -113,7 +146,14 @@ export class TenantService {
       query = query.offset(filters.offset)
     }
 
-    return query
+    const tenants = await query
+
+    // Convert dates to ISO strings for JSON serialization
+    return tenants.map(tenant => ({
+      ...tenant,
+      created_at: tenant.created_at?.toISOString(),
+      updated_at: tenant.updated_at?.toISOString(),
+    }))
   }
 
   async update(input: UpdateTenantInput) {

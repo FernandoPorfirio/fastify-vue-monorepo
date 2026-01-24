@@ -18,7 +18,7 @@ export interface CreateInviteInput {
 export interface CreateInviteResult {
   message: string
   token?: string // For development/testing
-  expiresAt: Date
+  expiresAt: string
 }
 
 export interface AcceptInviteInput {
@@ -165,7 +165,7 @@ export class InviteService {
 
     return {
       message: 'Invite sent successfully',
-      expiresAt,
+      expiresAt: expiresAt.toISOString(),
       ...(isDevelopment && { token }),
     }
   }
@@ -207,7 +207,7 @@ export class InviteService {
     if (!user) {
       const hashedPassword = await hashPassword(input.password)
       
-      const [userId] = await db('users')
+      const [newUser] = await db('users')
         .insert({
           email: input.email,
           password: hashedPassword,
@@ -220,7 +220,7 @@ export class InviteService {
         })
         .returning('id')
 
-      user = await db('users').where({ id: userId }).first()
+      user = await db('users').where({ id: newUser.id }).first()
     }
 
     // Verificar se o usuário já pertence ao tenant

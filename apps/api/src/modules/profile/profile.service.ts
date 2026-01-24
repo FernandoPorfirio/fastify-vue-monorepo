@@ -36,7 +36,7 @@ export class ProfileService {
       return null
     }
 
-    const [profileId] = await db('profiles')
+    const [profile] = await db('profiles')
       .insert({
         name: input.name,
         description: input.description || null,
@@ -46,11 +46,20 @@ export class ProfileService {
       })
       .returning('id')
 
-    return this.findById(profileId)
+    return this.findById(profile.id)
   }
 
   async findById(profileId: number) {
     const profile = await db('profiles')
+      .select(
+        'id',
+        'external_reference',
+        'name',
+        'description',
+        'is_active',
+        'created_at',
+        'updated_at'
+      )
       .where({ id: profileId })
       .whereNull('deleted_at')
       .first()
@@ -59,7 +68,12 @@ export class ProfileService {
       return null
     }
 
-    return profile
+    // Convert dates to ISO strings for JSON serialization
+    return {
+      ...profile,
+      created_at: profile.created_at?.toISOString(),
+      updated_at: profile.updated_at?.toISOString(),
+    }
   }
 
   async findAll(filters?: {
@@ -68,6 +82,15 @@ export class ProfileService {
     offset?: number
   }) {
     let query = db('profiles')
+      .select(
+        'id',
+        'external_reference',
+        'name',
+        'description',
+        'is_active',
+        'created_at',
+        'updated_at'
+      )
       .whereNull('deleted_at')
       .orderBy('name', 'asc')
 
@@ -83,7 +106,14 @@ export class ProfileService {
       query = query.offset(filters.offset)
     }
 
-    return query
+    const profiles = await query
+
+    // Convert dates to ISO strings for JSON serialization
+    return profiles.map(profile => ({
+      ...profile,
+      created_at: profile.created_at?.toISOString(),
+      updated_at: profile.updated_at?.toISOString(),
+    }))
   }
 
   async update(input: UpdateProfileInput) {

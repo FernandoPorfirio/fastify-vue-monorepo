@@ -55,7 +55,7 @@ export class RouteService {
       }
     }
 
-    const [routeId] = await db('routes')
+    const [route] = await db('routes')
       .insert({
         name: input.name,
         path: input.path,
@@ -68,11 +68,23 @@ export class RouteService {
       })
       .returning('id')
 
-    return this.findById(routeId)
+    return this.findById(route.id)
   }
 
   async findById(routeId: number) {
     const route = await db('routes')
+      .select(
+        'id',
+        'external_reference',
+        'name',
+        'path',
+        'type',
+        'method',
+        'description',
+        'is_active',
+        'created_at',
+        'updated_at'
+      )
       .where({ id: routeId })
       .whereNull('deleted_at')
       .first()
@@ -81,7 +93,12 @@ export class RouteService {
       return null
     }
 
-    return route
+    // Convert dates to ISO strings for JSON serialization
+    return {
+      ...route,
+      created_at: route.created_at?.toISOString(),
+      updated_at: route.updated_at?.toISOString(),
+    }
   }
 
   async findAll(filters?: {
@@ -92,6 +109,18 @@ export class RouteService {
     offset?: number
   }) {
     let query = db('routes')
+      .select(
+        'id',
+        'external_reference',
+        'name',
+        'path',
+        'type',
+        'method',
+        'description',
+        'is_active',
+        'created_at',
+        'updated_at'
+      )
       .whereNull('deleted_at')
       .orderBy('name', 'asc')
 
@@ -115,7 +144,14 @@ export class RouteService {
       query = query.offset(filters.offset)
     }
 
-    return query
+    const routes = await query
+
+    // Convert dates to ISO strings for JSON serialization
+    return routes.map(route => ({
+      ...route,
+      created_at: route.created_at?.toISOString(),
+      updated_at: route.updated_at?.toISOString(),
+    }))
   }
 
   async update(input: UpdateRouteInput) {
