@@ -24,7 +24,8 @@
       "@/lib/*": ["./src/lib/*"],
       "@/modules/*": ["./src/modules/*"],
       "@/plugins/*": ["./src/plugins/*"],
-      "@/routes/*": ["./src/routes/*"]
+      "@/routes/*": ["./src/routes/*"],
+      "@tests/*": ["./tests/*"]
     }
   }
 }

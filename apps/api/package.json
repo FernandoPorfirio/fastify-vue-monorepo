@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "tsx watch --env-file=.env src/server.ts",
     "start": "node dist/server.js",
-    "format": "biome format --write"
+    "format": "biome format --write",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage"
   },
   "keywords": [],
   "author": "",
@@ -14,11 +18,15 @@
   "packageManager": "pnpm@10.28.0",
   "devDependencies": {
     "@biomejs/biome": "2.3.11",
+    "@faker-js/faker": "^10.2.0",
     "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^25.0.9",
+    "@vitest/ui": "^4.0.17",
+    "dotenv": "^16.6.1",
     "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.17"
   },
   "dependencies": {
     "@fastify/cors": "^11.2.0",
