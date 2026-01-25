@@ -84,7 +84,7 @@ export class TenantController {
   async findAll(request: FastifyRequest, reply: FastifyReply) {
     const query = request.query as ListTenantsQuery
 
-    const filters: any = {}
+    const filters: { isActive?: boolean; plan?: string; limit?: number; offset?: number } = {}
 
     if (query.isActive !== undefined) {
       filters.isActive = query.isActive === 'true'

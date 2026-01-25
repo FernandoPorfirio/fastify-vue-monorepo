@@ -197,7 +197,7 @@ export class RouteService {
       }
     }
 
-    const updateData: Record<string, any> = {
+    const updateData: Record<string, unknown> = {
       updated_at: db.fn.now(),
     }
 

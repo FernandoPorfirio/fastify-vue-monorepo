@@ -5,7 +5,6 @@ import {
   closeTestApp,
   insertTenant,
   insertUserWithTenant,
-  insertProfile,
   deleteRecords,
   cleanupUsers,
   cleanupTenants,

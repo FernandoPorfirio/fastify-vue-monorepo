@@ -5,7 +5,6 @@ import {
   closeTestApp,
   insertTenant,
   insertUserWithTenant,
-  insertRoute,
   deleteRecords,
   cleanupUsers,
   cleanupTenants,

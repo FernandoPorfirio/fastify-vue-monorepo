@@ -74,7 +74,7 @@ export class ProfileController {
   async findAll(request: FastifyRequest, reply: FastifyReply) {
     const query = request.query as ListProfilesQuery
 
-    const filters: any = {}
+    const filters: { isActive?: boolean; limit?: number; offset?: number } = {}
 
     if (query.isActive !== undefined) {
       filters.isActive = query.isActive === 'true'

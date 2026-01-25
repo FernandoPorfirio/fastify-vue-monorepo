@@ -24,17 +24,20 @@ Template para projetos full-stack com Fastify (API) e Vue (Web) usando pnpm work
 ## Setup Rápido
 
 1. **Clone o repositório**
+
 ```bash
 git clone <repo-url>
 cd fastify-vue-monorepo
 ```
 
 2. **Instale as dependências**
+
 ```bash
 pnpm install
 ```
 
 3. **Configure as variáveis de ambiente**
+
 ```bash
 # Copie o arquivo de exemplo para os apps
 cp .env.example apps/api/.env
@@ -45,21 +48,25 @@ cp .env.example apps/migrations/.env
 ```
 
 4. **Inicie o banco de dados**
+
 ```bash
 docker-compose up -d
 ```
 
 5. **Execute as migrations**
+
 ```bash
 pnpm migrate:latest
 ```
 
 6. **Execute os seeds**
+
 ```bash
 pnpm seed:run
 ```
 
 7. **Inicie a API**
+
 ```bash
 pnpm dev:api
 ```
@@ -69,6 +76,7 @@ pnpm dev:api
 > Todos os comandos devem ser executados da raiz do monorepo
 
 ### Docker
+
 ```bash
 # Iniciar banco de dados
 docker-compose up -d
@@ -84,6 +92,7 @@ docker-compose down -v
 ```
 
 ### Migrations
+
 ```bash
 # Criar nova migration (será criada em apps/migrations/migrations/)
 pnpm migrate:make nome_da_migration
@@ -99,6 +108,7 @@ pnpm seed:run
 ```
 
 ### API
+
 ```bash
 # Desenvolvimento com hot reload
 pnpm dev:api
@@ -115,15 +125,18 @@ pnpm format
 A API está disponível em http://localhost:3333
 
 ### Documentação
+
 - **Swagger UI**: http://localhost:3333/api-docs
 - **Health Check**: http://localhost:3333/health
 
 ### Autenticação
 
 #### POST /auth/login
+
 Autentica um usuário e retorna JWT + Refresh Token
 
 **Body:**
+
 ```json
 {
   "email": "admin@example.com",
@@ -132,6 +145,7 @@ Autentica um usuário e retorna JWT + Refresh Token
 ```
 
 **Response 200:**
+
 ```json
 {
   "token": "eyJhbGc...",
@@ -145,9 +159,11 @@ Autentica um usuário e retorna JWT + Refresh Token
 ```
 
 #### POST /auth/refresh
+
 Renova o access token usando o refresh token
 
 **Body:**
+
 ```json
 {
   "refreshToken": "abc123..."
@@ -155,6 +171,7 @@ Renova o access token usando o refresh token
 ```
 
 **Response 200:**
+
 ```json
 {
   "token": "eyJhbGc...",
@@ -163,14 +180,17 @@ Renova o access token usando o refresh token
 ```
 
 #### POST /auth/logout
+
 Revoga o refresh token (requer autenticação)
 
 **Headers:**
+
 ```
 Authorization: Bearer <token>
 ```
 
 **Body:**
+
 ```json
 {
   "refreshToken": "abc123..."
@@ -178,6 +198,7 @@ Authorization: Bearer <token>
 ```
 
 **Response 200:**
+
 ```json
 {
   "message": "Logged out successfully"
@@ -187,6 +208,7 @@ Authorization: Bearer <token>
 ## Banco de Dados
 
 ### Credenciais Padrão (Development)
+
 - **Host**: localhost
 - **Port**: 5432
 - **Database**: appdb
@@ -194,7 +216,9 @@ Authorization: Bearer <token>
 - **Password**: postgres
 
 ### Usuário Inicial
+
 Após executar os seeds, você terá:
+
 - **Email**: admin@example.com
 - **Senha**: admin123
 - **Tenant**: Default Tenant
@@ -205,18 +229,21 @@ Após executar os seeds, você terá:
 O banco de dados possui as seguintes tabelas:
 
 #### Autenticação e Usuários
+
 - **users**: Dados dos usuários (email, senha hash, nome)
 - **tenants**: Multi-tenancy (empresas/organizações)
 - **tenant_users**: Relação N:N entre tenants e users
 - **refresh_tokens**: Tokens de refresh JWT
 
 #### RBAC (Role-Based Access Control)
+
 - **profiles**: Perfis de acesso (Super Admin, Admin, User, etc)
 - **routes**: Rotas do sistema (API e Frontend) com controle de acesso
 - **profile_routes**: Permissões - relação N:N entre perfis e rotas
 - **user_profiles**: Atribuição de perfis aos usuários (por tenant)
 
 #### Outros
+
 - **audit_logs**: Logs de auditoria de ações do sistema
 - **invites**: Convites para novos usuários
 - **password_resets**: Tokens de recuperação de senha
@@ -224,6 +251,7 @@ O banco de dados possui as seguintes tabelas:
 ## Stack Tecnológico
 
 ### API (apps/api)
+
 - **Fastify 5**: Framework web rápido e de baixo overhead
 - **TypeScript**: Tipagem estática
 - **Zod**: Validação de schemas em runtime
@@ -235,10 +263,12 @@ O banco de dados possui as seguintes tabelas:
 - **@fastify/cors**: CORS configurável
 
 ### Database
+
 - **PostgreSQL 16**: Banco de dados relacional
 - **Knex.js**: Query builder + migrations + seeds
 
 ### Monorepo
+
 - **pnpm workspaces**: Gerenciamento de monorepo
 - **Biome**: Linter e formatter (alternativa ao ESLint + Prettier)
 
@@ -272,7 +302,9 @@ apps/api/src/
 ### Padrões Utilizados
 
 #### **lib/** - Funções Puras
+
 Lógica de negócio sem dependência do Fastify. Fácil de testar e reutilizar.
+
 ```typescript
 // Exemplo: lib/auth.ts
 export async function hashPassword(password: string): Promise<string>
@@ -281,7 +313,9 @@ export function verifyToken(token: string): JWTPayload
 ```
 
 #### **plugins/** - Extensões do Fastify
+
 Adiciona funcionalidades via decorators (middleware, helpers globais).
+
 ```typescript
 // Exemplo: plugins/auth.ts
 app.decorate('authenticate', async (request, reply) => { ... })
@@ -289,7 +323,9 @@ app.decorate('authorize', (route, method) => async (request, reply) => { ... })
 ```
 
 #### **modules/** - Módulos Funcionais
+
 Agrupa rotas relacionadas com sua lógica de negócio.
+
 - **Controller**: Recebe requisição, valida, chama service, retorna resposta
 - **Service**: Lógica de negócio, regras, acesso ao banco
 - **Routes**: Define endpoints, schemas Zod, vincula ao controller
@@ -302,6 +338,7 @@ app.post('/auth/login', {
 ```
 
 #### **Quando usar cada camada:**
+
 - **lib/**: Lógica reutilizável sem contexto de requisição HTTP
 - **plugins/**: Middleware, decorators, funcionalidades globais
 - **modules/**: Organização de features (auth, users, etc)
@@ -313,17 +350,21 @@ app.post('/auth/login', {
 ### ✅ Sistema Implementado
 
 #### JWT + Refresh Tokens
+
 - **Access Token**: Válido por 15 minutos (configurável)
 - **Refresh Token**: Válido por 7 dias (configurável)
 - **Armazenamento**: Refresh tokens são salvos no banco com controle de revogação
 
 #### RBAC (Role-Based Access Control)
+
 Sistema completo de controle de acesso baseado em:
+
 - **Perfis**: Conjuntos de permissões (Super Admin, Admin, User, etc)
 - **Rotas**: Endpoints cadastrados com controle de acesso
 - **Profile Routes**: Define quais perfis podem acessar quais rotas
 
 ### Credenciais de Teste
+
 ```
 Email: admin@example.com
 Senha: admin123
@@ -333,53 +374,64 @@ Perfil: Super Admin (acesso total)
 ### Como Proteger Rotas
 
 #### 1. Apenas Autenticação
+
 ```typescript
-app.get('/protected', {
-  onRequest: [app.authenticate]
-}, async (request, reply) => {
-  // request.user está disponível
-  return { user: request.user }
-})
+app.get(
+  '/protected',
+  {
+    onRequest: [app.authenticate],
+  },
+  async (request, reply) => {
+    // request.user está disponível
+    return { user: request.user }
+  }
+)
 ```
 
 #### 2. Autenticação + Autorização RBAC
+
 ```typescript
-app.delete('/users/:id', {
-  onRequest: [
-    app.authenticate,
-    app.authorize('/api/users/:id', 'DELETE')
-  ]
-}, async (request, reply) => {
-  // Só executa se o usuário tem permissão
-})
+app.delete(
+  '/users/:id',
+  {
+    onRequest: [app.authenticate, app.authorize('/api/users/:id', 'DELETE')],
+  },
+  async (request, reply) => {
+    // Só executa se o usuário tem permissão
+  }
+)
 ```
 
 ### Middleware Disponíveis
 
 #### `app.authenticate`
+
 - Verifica o JWT no header `Authorization: Bearer <token>`
 - Carrega dados do usuário em `request.user`
 - Retorna 401 se token inválido ou expirado
 
 #### `app.authorize(route, method)`
+
 - Verifica se o perfil do usuário tem permissão para acessar a rota
 - Consulta tabelas `routes` e `profile_routes`
 - Retorna 403 se sem permissão
 - **Importante**: Se a rota não estiver cadastrada no banco, permite acesso
 
 ### Objeto `request.user`
+
 ```typescript
 interface User {
   userId: number
   email: string
   tenantId: number
-  profileIds: number[]  // IDs dos perfis do usuário
+  profileIds: number[] // IDs dos perfis do usuário
 }
 ```
 
 ## Variáveis de Ambiente
 
 ### apps/api/.env
+
 ```bash
 # Banco de Dados
 DB_HOST=localhost
@@ -402,6 +454,7 @@ CORS_ORIGIN=http://localhost:5173
 ```
 
 ### apps/migrations/.env
+
 ```bash
 # Banco de Dados (mesmo do apps/api/.env)
 DB_HOST=localhost
@@ -418,12 +471,14 @@ DB_NAME=appdb
 O sistema suporta **multi-tenancy** nativo, permitindo que múltiplas empresas/organizações usem a mesma aplicação com dados isolados.
 
 ### Como Funciona
+
 - Cada **tenant** representa uma empresa/organização
 - Usuários podem pertencer a múltiplos tenants
 - Perfis e permissões são definidos **por tenant**
 - Ao fazer login, o sistema identifica o tenant do usuário
 
 ### Estrutura de Dados
+
 ```
 tenants (empresas)
   └── tenant_users (usuários do tenant)
@@ -433,6 +488,7 @@ tenants (empresas)
 ```
 
 ### Exemplo de Uso
+
 1. Usuário `admin@example.com` pertence ao tenant "Default"
 2. No tenant "Default", ele tem o perfil "Super Admin"
 3. Se o mesmo usuário for adicionado ao tenant "Acme Corp", pode ter perfil diferente
@@ -440,6 +496,7 @@ tenants (empresas)
 ## Status do Projeto
 
 ### ✅ Implementado
+
 - [x] Setup do monorepo com pnpm workspaces
 - [x] API Fastify com TypeScript
 - [x] Migrations e Seeds (Knex.js + PostgreSQL)
@@ -453,6 +510,7 @@ tenants (empresas)
 - [x] Biome (linter + formatter)
 
 ### 🚧 Pendente
+
 - [ ] Testes automatizados (Jest/Vitest)
 - [ ] Frontend Vue
 - [ ] Packages compartilhados (contracts, i18n)
@@ -467,7 +525,7 @@ tenants (empresas)
 1. **Implementar testes**: Adicionar Jest ou Vitest
 2. **Frontend Vue**: Criar interface de administração
 3. **Shared packages**: Mover schemas Zod para `packages/contracts`
-4. **Features adicionais**: 
+4. **Features adicionais**:
    - Recuperação de senha
    - Sistema de convites
    - Auditoria de ações

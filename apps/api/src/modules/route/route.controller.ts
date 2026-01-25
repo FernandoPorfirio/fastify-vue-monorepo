@@ -81,7 +81,13 @@ export class RouteController {
   async findAll(request: FastifyRequest, reply: FastifyReply) {
     const query = request.query as ListRoutesQuery
 
-    const filters: any = {}
+    const filters: {
+      isActive?: boolean
+      type?: string
+      method?: string
+      limit?: number
+      offset?: number
+    } = {}
 
     if (query.isActive !== undefined) {
       filters.isActive = query.isActive === 'true'

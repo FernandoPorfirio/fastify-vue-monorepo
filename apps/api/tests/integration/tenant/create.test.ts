@@ -5,7 +5,6 @@ import {
   closeTestApp,
   insertTenant,
   insertUserWithTenant,
-  deleteRecords,
   cleanupUsers,
   cleanupTenants,
 } from '@tests/helpers'
