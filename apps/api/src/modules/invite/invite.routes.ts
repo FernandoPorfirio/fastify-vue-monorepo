@@ -12,7 +12,7 @@ declare module 'fastify' {
 
 const inviteController = new InviteController()
 
-const inviteRoutes: FastifyPluginAsyncZod = async (app) => {
+const inviteRoutes: FastifyPluginAsyncZod = async app => {
   // Create Invite (Protected)
   app.post(
     '/invite',

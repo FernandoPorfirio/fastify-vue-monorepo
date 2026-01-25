@@ -3,12 +3,7 @@
  */
 
 // Tenant Factory
-export {
-  makeTenant,
-  insertTenant,
-  type TenantData,
-  type TenantRecord
-} from './tenant.factory'
+export { makeTenant, insertTenant, type TenantData, type TenantRecord } from './tenant.factory'
 
 // User Factory
 export {
@@ -16,7 +11,7 @@ export {
   insertUser,
   insertUserWithTenant,
   type UserData,
-  type UserRecord
+  type UserRecord,
 } from './user.factory'
 
 // Profile Factory
@@ -26,16 +21,11 @@ export {
   linkProfileToRoute,
   linkUserToProfile,
   type ProfileData,
-  type ProfileRecord
+  type ProfileRecord,
 } from './profile.factory'
 
 // Route Factory
-export {
-  makeRoute,
-  insertRoute,
-  type RouteData,
-  type RouteRecord
-} from './route.factory'
+export { makeRoute, insertRoute, type RouteData, type RouteRecord } from './route.factory'
 
 // Invite Factory
 export {
@@ -43,5 +33,5 @@ export {
   insertInvite,
   acceptInvite,
   type InviteData,
-  type InviteRecord
+  type InviteRecord,
 } from './invite.factory'

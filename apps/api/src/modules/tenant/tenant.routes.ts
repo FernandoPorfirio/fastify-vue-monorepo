@@ -12,7 +12,7 @@ declare module 'fastify' {
 
 const tenantController = new TenantController()
 
-const tenantRoutes: FastifyPluginAsyncZod = async (app) => {
+const tenantRoutes: FastifyPluginAsyncZod = async app => {
   // Create Tenant (Protected)
   app.post(
     '/tenant',

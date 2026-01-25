@@ -106,12 +106,7 @@ export class TenantService {
     }
   }
 
-  async findAll(filters?: {
-    isActive?: boolean
-    plan?: string
-    limit?: number
-    offset?: number
-  }) {
+  async findAll(filters?: { isActive?: boolean; plan?: string; limit?: number; offset?: number }) {
     let query = db('tenants')
       .select(
         'id',
@@ -158,10 +153,7 @@ export class TenantService {
 
   async update(input: UpdateTenantInput) {
     // Verificar se tenant existe
-    const tenant = await db('tenants')
-      .where({ id: input.tenantId })
-      .whereNull('deleted_at')
-      .first()
+    const tenant = await db('tenants').where({ id: input.tenantId }).whereNull('deleted_at').first()
 
     if (!tenant) {
       return null
@@ -207,48 +199,37 @@ export class TenantService {
     if (input.phone !== undefined) updateData.phone = input.phone
     if (input.isActive !== undefined) updateData.is_active = input.isActive
 
-    await db('tenants')
-      .where({ id: input.tenantId })
-      .update(updateData)
+    await db('tenants').where({ id: input.tenantId }).update(updateData)
 
     return this.findById(input.tenantId)
   }
 
   async softDelete(tenantId: number) {
     // Verificar se tenant existe
-    const tenant = await db('tenants')
-      .where({ id: tenantId })
-      .whereNull('deleted_at')
-      .first()
+    const tenant = await db('tenants').where({ id: tenantId }).whereNull('deleted_at').first()
 
     if (!tenant) {
       return null
     }
 
     // Fazer soft delete do tenant
-    await db('tenants')
-      .where({ id: tenantId })
-      .update({
-        is_active: false,
-        deleted_at: db.fn.now(),
-        updated_at: db.fn.now(),
-      })
+    await db('tenants').where({ id: tenantId }).update({
+      is_active: false,
+      deleted_at: db.fn.now(),
+      updated_at: db.fn.now(),
+    })
 
     // Desativar todos os vínculos com usuários
-    await db('tenant_users')
-      .where({ tenant_id: tenantId })
-      .update({
-        is_active: false,
-        updated_at: db.fn.now(),
-      })
+    await db('tenant_users').where({ tenant_id: tenantId }).update({
+      is_active: false,
+      updated_at: db.fn.now(),
+    })
 
     // Desativar todos os perfis de usuário neste tenant
-    await db('user_profiles')
-      .where({ tenant_id: tenantId })
-      .update({
-        is_active: false,
-        updated_at: db.fn.now(),
-      })
+    await db('user_profiles').where({ tenant_id: tenantId }).update({
+      is_active: false,
+      updated_at: db.fn.now(),
+    })
 
     return {
       message: 'Tenant deleted successfully',
@@ -287,12 +268,10 @@ export class TenantService {
     if (existingLink) {
       // Se existe mas está inativo, reativar
       if (!existingLink.is_active) {
-        await db('tenant_users')
-          .where({ id: existingLink.id })
-          .update({
-            is_active: true,
-            updated_at: db.fn.now(),
-          })
+        await db('tenant_users').where({ id: existingLink.id }).update({
+          is_active: true,
+          updated_at: db.fn.now(),
+        })
 
         return {
           message: 'User reactivated in tenant',
@@ -329,19 +308,14 @@ export class TenantService {
 
   async removeUser(input: RemoveUserFromTenantInput) {
     // Verificar se tenant existe
-    const tenant = await db('tenants')
-      .where({ id: input.tenantId })
-      .whereNull('deleted_at')
-      .first()
+    const tenant = await db('tenants').where({ id: input.tenantId }).whereNull('deleted_at').first()
 
     if (!tenant) {
       return null
     }
 
     // Verificar se usuário existe
-    const user = await db('users')
-      .where({ id: input.userId })
-      .first()
+    const user = await db('users').where({ id: input.userId }).first()
 
     if (!user) {
       return null
@@ -361,12 +335,10 @@ export class TenantService {
     }
 
     // Desativar vínculo
-    await db('tenant_users')
-      .where({ id: link.id })
-      .update({
-        is_active: false,
-        updated_at: db.fn.now(),
-      })
+    await db('tenant_users').where({ id: link.id }).update({
+      is_active: false,
+      updated_at: db.fn.now(),
+    })
 
     // Desativar todos os perfis do usuário neste tenant
     await db('user_profiles')

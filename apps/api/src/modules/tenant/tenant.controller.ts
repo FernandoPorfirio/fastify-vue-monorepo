@@ -40,10 +40,7 @@ export interface ListTenantsQuery {
 }
 
 export class TenantController {
-  async create(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) {
+  async create(request: FastifyRequest, reply: FastifyReply) {
     const body = request.body as CreateTenantBody
 
     const result = await tenantService.create(body)
@@ -59,10 +56,7 @@ export class TenantController {
     return reply.status(201).send(result)
   }
 
-  async findById(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) {
+  async findById(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as TenantParams
     const tenantId = Number.parseInt(id, 10)
 
@@ -87,10 +81,7 @@ export class TenantController {
     return reply.status(200).send(result)
   }
 
-  async findAll(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) {
+  async findAll(request: FastifyRequest, reply: FastifyReply) {
     const query = request.query as ListTenantsQuery
 
     const filters: any = {}
@@ -116,10 +107,7 @@ export class TenantController {
     return reply.status(200).send(result)
   }
 
-  async update(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) {
+  async update(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as TenantParams
     const body = request.body as UpdateTenantBody
     const tenantId = Number.parseInt(id, 10)
@@ -148,10 +136,7 @@ export class TenantController {
     return reply.status(200).send(result)
   }
 
-  async softDelete(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) {
+  async softDelete(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as TenantParams
     const tenantId = Number.parseInt(id, 10)
 
@@ -176,10 +161,7 @@ export class TenantController {
     return reply.status(200).send(result)
   }
 
-  async addUser(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) {
+  async addUser(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as TenantParams
     const { userId } = request.body as AddUserBody
     const tenantId = Number.parseInt(id, 10)
@@ -198,17 +180,15 @@ export class TenantController {
       return reply.status(400).send({
         statusCode: 400,
         error: 'Bad Request',
-        message: 'Tenant not found, user not found, user already linked, or tenant user limit reached',
+        message:
+          'Tenant not found, user not found, user already linked, or tenant user limit reached',
       })
     }
 
     return reply.status(200).send(result)
   }
 
-  async removeUser(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) {
+  async removeUser(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as TenantParams
     const { userId } = request.body as AddUserBody
     const tenantId = Number.parseInt(id, 10)

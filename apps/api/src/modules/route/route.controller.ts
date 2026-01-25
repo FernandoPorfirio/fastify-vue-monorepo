@@ -37,10 +37,7 @@ export interface ListRoutesQuery {
 }
 
 export class RouteController {
-  async create(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) {
+  async create(request: FastifyRequest, reply: FastifyReply) {
     const body = request.body as CreateRouteBody
 
     const result = await routeService.create(body)
@@ -56,10 +53,7 @@ export class RouteController {
     return reply.status(201).send(result)
   }
 
-  async findById(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) {
+  async findById(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as RouteParams
     const routeId = Number.parseInt(id, 10)
 
@@ -84,10 +78,7 @@ export class RouteController {
     return reply.status(200).send(result)
   }
 
-  async findAll(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) {
+  async findAll(request: FastifyRequest, reply: FastifyReply) {
     const query = request.query as ListRoutesQuery
 
     const filters: any = {}
@@ -117,10 +108,7 @@ export class RouteController {
     return reply.status(200).send(result)
   }
 
-  async update(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) {
+  async update(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as RouteParams
     const body = request.body as UpdateRouteBody
     const routeId = Number.parseInt(id, 10)
@@ -142,17 +130,15 @@ export class RouteController {
       return reply.status(400).send({
         statusCode: 400,
         error: 'Bad Request',
-        message: 'Route not found, name already exists, or path + method combination already exists',
+        message:
+          'Route not found, name already exists, or path + method combination already exists',
       })
     }
 
     return reply.status(200).send(result)
   }
 
-  async softDelete(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) {
+  async softDelete(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as RouteParams
     const routeId = Number.parseInt(id, 10)
 
@@ -177,10 +163,7 @@ export class RouteController {
     return reply.status(200).send(result)
   }
 
-  async addProfile(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) {
+  async addProfile(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as RouteParams
     const { profileId } = request.body as AddProfileBody
     const routeId = Number.parseInt(id, 10)
@@ -206,10 +189,7 @@ export class RouteController {
     return reply.status(200).send(result)
   }
 
-  async removeProfile(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) {
+  async removeProfile(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as RouteParams
     const { profileId } = request.body as AddProfileBody
     const routeId = Number.parseInt(id, 10)
@@ -228,7 +208,8 @@ export class RouteController {
       return reply.status(400).send({
         statusCode: 400,
         error: 'Bad Request',
-        message: 'Route not found, profile not found, or profile does not have access to this route',
+        message:
+          'Route not found, profile not found, or profile does not have access to this route',
       })
     }
 

@@ -4,7 +4,7 @@ import { UserController } from './user.controller'
 
 const userController = new UserController()
 
-const userRoutes: FastifyPluginAsyncZod = async (app) => {
+const userRoutes: FastifyPluginAsyncZod = async app => {
   // Request Password Reset
   app.post(
     '/user/password-reset/request',

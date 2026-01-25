@@ -34,21 +34,21 @@ export interface ResetPasswordResult {
 function getPasswordResetTokenExpiresAt(): Date {
   const expires = PASSWORD_RESET_TOKEN_EXPIRES_IN
   const match = /(\d+)([dhm])/.exec(expires)
-  
+
   if (!match) {
     // Default to 1 hour
     return new Date(Date.now() + 60 * 60 * 1000)
   }
-  
+
   const value = Number.parseInt(match[1], 10)
   const unit = match[2]
-  
+
   const multipliers: Record<string, number> = {
     m: 60 * 1000,
     h: 60 * 60 * 1000,
     d: 24 * 60 * 60 * 1000,
   }
-  
+
   return new Date(Date.now() + value * multipliers[unit])
 }
 
@@ -57,9 +57,7 @@ export class UserService {
     input: RequestPasswordResetInput
   ): Promise<RequestPasswordResetResult> {
     // Buscar usuário pelo email
-    const user = await db('users')
-      .where({ email: input.email, is_active: true })
-      .first()
+    const user = await db('users').where({ email: input.email, is_active: true }).first()
 
     // Por segurança, sempre retornar sucesso mesmo se o usuário não existir
     if (!user) {
@@ -97,9 +95,7 @@ export class UserService {
     }
   }
 
-  async verifyResetToken(
-    input: VerifyResetTokenInput
-  ): Promise<VerifyResetTokenResult> {
+  async verifyResetToken(input: VerifyResetTokenInput): Promise<VerifyResetTokenResult> {
     const resetToken = await db('password_resets')
       .where({ token: input.token })
       .whereNull('used_at')
@@ -116,9 +112,7 @@ export class UserService {
     }
   }
 
-  async resetPassword(
-    input: ResetPasswordInput
-  ): Promise<ResetPasswordResult | null> {
+  async resetPassword(input: ResetPasswordInput): Promise<ResetPasswordResult | null> {
     // Verificar se o token é válido
     const resetToken = await db('password_resets')
       .where({ token: input.token })
@@ -131,9 +125,7 @@ export class UserService {
     }
 
     // Buscar usuário
-    const user = await db('users')
-      .where({ id: resetToken.user_id, is_active: true })
-      .first()
+    const user = await db('users').where({ id: resetToken.user_id, is_active: true }).first()
 
     if (!user) {
       return null
@@ -143,17 +135,13 @@ export class UserService {
     const hashedPassword = await hashPassword(input.newPassword)
 
     // Atualizar senha do usuário
-    await db('users')
-      .where({ id: user.id })
-      .update({
-        password: hashedPassword,
-        updated_at: db.fn.now(),
-      })
+    await db('users').where({ id: user.id }).update({
+      password: hashedPassword,
+      updated_at: db.fn.now(),
+    })
 
     // Marcar token como usado
-    await db('password_resets')
-      .where({ id: resetToken.id })
-      .update({ used_at: db.fn.now() })
+    await db('password_resets').where({ id: resetToken.id }).update({ used_at: db.fn.now() })
 
     // Invalidar todos os refresh tokens do usuário por segurança
     await db('refresh_tokens')

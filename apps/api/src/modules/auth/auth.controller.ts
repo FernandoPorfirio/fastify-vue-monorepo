@@ -18,10 +18,7 @@ export interface LogoutBody {
 }
 
 export class AuthController {
-  async login(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) {
+  async login(request: FastifyRequest, reply: FastifyReply) {
     const { email, password } = request.body as LoginBody
 
     const result = await authService.login(
@@ -41,10 +38,7 @@ export class AuthController {
     return reply.status(200).send(result)
   }
 
-  async refresh(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) {
+  async refresh(request: FastifyRequest, reply: FastifyReply) {
     const { refreshToken } = request.body as RefreshBody
 
     const result = await authService.refresh(
@@ -64,10 +58,7 @@ export class AuthController {
     return reply.status(200).send(result)
   }
 
-  async logout(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) {
+  async logout(request: FastifyRequest, reply: FastifyReply) {
     const { refreshToken } = request.body as LogoutBody
     const userId = (request.user as JWTPayload).userId
 

@@ -3,14 +3,14 @@ import { db } from '@/lib/db'
 
 /**
  * Factory para criar dados de Route
- * 
+ *
  * Factory PURA: não tem side effects, apenas retorna dados.
  * Para inserir no banco, use o helper insertRoute() explicitamente.
  */
 export function makeRoute(overrides: Partial<RouteData> = {}): RouteData {
   const method = faker.helpers.arrayElement(['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])
   const resource = faker.helpers.arrayElement(['users', 'tenants', 'profiles', 'routes', 'invites'])
-  
+
   return {
     name: `${method} ${resource}`,
     path: `/api/${resource}`,
@@ -28,7 +28,7 @@ export function makeRoute(overrides: Partial<RouteData> = {}): RouteData {
 export async function insertRoute(data?: Partial<RouteData>): Promise<RouteRecord> {
   // Using db from @/lib/db
   const routeData = makeRoute(data)
-  
+
   const [route] = await db('routes').insert(routeData).returning('*')
   return route
 }

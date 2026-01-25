@@ -46,7 +46,7 @@ app.register(authPlugin)
 
 app.register(fastifyCors, {
   origin: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
 })
 
 app.register(fastifySwagger, {
@@ -66,5 +66,5 @@ const port = Number(process.env.PORT) || 3333
 const host = process.env.HOST || '0.0.0.0'
 
 app.listen({ port, host }).then(() => {
-  console.log(`Server running on http://${host}:${port}`)
+  app.log.info(`Server running on http://${host}:${port}`)
 })

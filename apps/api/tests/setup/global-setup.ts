@@ -13,12 +13,12 @@ process.env.NODE_ENV = 'test'
 
 export default async function globalSetup() {
   console.log('🔧 Global setup: checking test database...')
-  
+
   // Criar banco de teste se não existir
   await ensureTestDatabaseExists()
-  
+
   // Executar migrations
   await runTestMigrations()
-  
+
   console.log('✓ Test database ready\n')
 }

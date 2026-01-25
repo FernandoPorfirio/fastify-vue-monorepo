@@ -4,7 +4,7 @@ import type { FastifyInstance } from 'fastify'
 
 /**
  * Rate Limiting Plugin
- * 
+ *
  * - Global: 100 requisições / 15 minutos
  * - Auth: 5 tentativas / 15 minutos
  * - Identificação por usuário autenticado ou IP
@@ -21,7 +21,7 @@ export default fastifyPlugin(async (fastify: FastifyInstance) => {
       'x-ratelimit-remaining': true,
       'x-ratelimit-reset': true,
     },
-    keyGenerator: (req) => {
+    keyGenerator: req => {
       const userId = req.user?.userId
       return userId ? `user:${userId}` : `ip:${req.ip}`
     },
@@ -35,7 +35,7 @@ export default fastifyPlugin(async (fastify: FastifyInstance) => {
 
   // AUTH (mais restritivo)
   await fastify.register(
-    async (authScope) => {
+    async authScope => {
       await authScope.register(rateLimit, {
         max: 5,
         timeWindow: '15 minutes',

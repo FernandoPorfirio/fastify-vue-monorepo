@@ -12,7 +12,7 @@ declare module 'fastify' {
 
 const authController = new AuthController()
 
-const authRoutes: FastifyPluginAsyncZod = async (app) => {
+const authRoutes: FastifyPluginAsyncZod = async app => {
   // Login
   app.post(
     '/auth/login',

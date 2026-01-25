@@ -6,12 +6,15 @@
   "scripts": {
     "dev:api": "pnpm --filter api dev",
     "start:api": "pnpm --filter api start",
-    "format:api": "pnpm --filter api format",
+    "lint": "eslint . --ext .ts,.js",
+    "lint:fix": "eslint . --ext .ts,.js --fix",
+    "format": "prettier --write \"**/*.{ts,js,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,js,json,md}\"",
+    "check": "pnpm format:check && pnpm lint && pnpm --filter api test",
     "migrate:make": "pnpm --filter migrations migrate:make",
     "migrate:latest": "pnpm --filter migrations migrate:latest",
     "migrate:rollback": "pnpm --filter migrations migrate:rollback",
     "seed:run": "pnpm --filter migrations seed:run",
-    "format": "biome format --write .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -19,6 +22,11 @@
   "license": "ISC",
   "packageManager": "pnpm@10.28.0",
   "devDependencies": {
-    "@biomejs/biome": "2.3.11"
+    "@typescript-eslint/eslint-plugin": "^8.21.0",
+    "@typescript-eslint/parser": "^8.21.0",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "prettier": "^3.4.2"
   }
 }

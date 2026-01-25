@@ -44,9 +44,7 @@ export class AuthService {
     userAgent?: string
   ): Promise<LoginResult | null> {
     // Buscar usuário
-    const user = await db('users')
-      .where({ email: input.email, is_active: true })
-      .first()
+    const user = await db('users').where({ email: input.email, is_active: true }).first()
 
     if (!user) {
       return null
@@ -60,9 +58,7 @@ export class AuthService {
     }
 
     // Buscar tenant do usuário
-    const tenantUser = await db('tenant_users')
-      .where({ user_id: user.id, is_active: true })
-      .first()
+    const tenantUser = await db('tenant_users').where({ user_id: user.id, is_active: true }).first()
 
     // Gerar tokens
     const token = signToken({
@@ -101,18 +97,14 @@ export class AuthService {
     }
 
     // Buscar usuário
-    const user = await db('users')
-      .where({ id: userId, is_active: true })
-      .first()
+    const user = await db('users').where({ id: userId, is_active: true }).first()
 
     if (!user) {
       return null
     }
 
     // Buscar tenant do usuário
-    const tenantUser = await db('tenant_users')
-      .where({ user_id: user.id, is_active: true })
-      .first()
+    const tenantUser = await db('tenant_users').where({ user_id: user.id, is_active: true }).first()
 
     // Revogar refresh token antigo
     await revokeRefreshToken(input.refreshToken)

@@ -3,7 +3,7 @@ import { db } from '@/lib/db'
 
 /**
  * Factory para criar dados de Profile
- * 
+ *
  * Factory PURA: não tem side effects, apenas retorna dados.
  * Para inserir no banco, use o helper insertProfile() explicitamente.
  */
@@ -22,7 +22,7 @@ export function makeProfile(overrides: Partial<ProfileData> = {}): ProfileData {
 export async function insertProfile(data?: Partial<ProfileData>): Promise<ProfileRecord> {
   // Using db from @/lib/db
   const profileData = makeProfile(data)
-  
+
   const [profile] = await db('profiles').insert(profileData).returning('*')
   return profile
 }
@@ -32,7 +32,7 @@ export async function insertProfile(data?: Partial<ProfileData>): Promise<Profil
  */
 export async function linkProfileToRoute(profileId: number, routeId: number): Promise<void> {
   // Using db from @/lib/db
-  
+
   await db('profile_routes').insert({
     profile_id: profileId,
     route_id: routeId,
@@ -44,7 +44,7 @@ export async function linkProfileToRoute(profileId: number, routeId: number): Pr
  */
 export async function linkUserToProfile(userId: number, profileId: number): Promise<void> {
   // Using db from @/lib/db
-  
+
   await db('user_profiles').insert({
     user_id: userId,
     profile_id: profileId,

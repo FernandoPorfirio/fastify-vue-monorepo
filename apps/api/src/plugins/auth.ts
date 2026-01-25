@@ -13,16 +13,16 @@ declare module 'fastify' {
   interface FastifyInstance {
     authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>
     checkPermission: (request: FastifyRequest, reply: FastifyReply) => Promise<void>
-    authorize: (routePath: string, method?: string) => (request: FastifyRequest, reply: FastifyReply) => Promise<void>
+    authorize: (
+      routePath: string,
+      method?: string
+    ) => (request: FastifyRequest, reply: FastifyReply) => Promise<void>
   }
 }
 
 async function authPlugin(app: FastifyInstance) {
   // Decorator para verificar autenticação
-  app.decorate('authenticate', async (
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) => {
+  app.decorate('authenticate', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       const authHeader = request.headers.authorization
 
@@ -35,7 +35,7 @@ async function authPlugin(app: FastifyInstance) {
       }
 
       const token = authHeader.substring(7)
-      
+
       // Verificar se o token não está vazio
       if (!token) {
         return reply.status(401).send({
@@ -44,7 +44,7 @@ async function authPlugin(app: FastifyInstance) {
           message: 'Token is required',
         })
       }
-      
+
       const payload = verifyToken(token)
 
       // Buscar tenant e perfis do usuário
@@ -84,10 +84,7 @@ async function authPlugin(app: FastifyInstance) {
   })
 
   // Middleware RBAC automático - verifica permissão baseado na rota da requisição
-  app.decorate('checkPermission', async (
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) => {
+  app.decorate('checkPermission', async (request: FastifyRequest, reply: FastifyReply) => {
     // Verificar se usuário está autenticado
     if (!request.user) {
       return reply.status(401).send({
@@ -103,18 +100,21 @@ async function authPlugin(app: FastifyInstance) {
 
     // Buscar a rota no banco de dados
     const route = await db('routes')
-      .where({ 
-        path: requestPath, 
+      .where({
+        path: requestPath,
         method: requestMethod,
         type: 'api',
-        is_active: true 
+        is_active: true,
       })
       .whereNull('deleted_at')
       .first()
 
     // Se a rota não está cadastrada no sistema, permite acesso
     if (!route) {
-      app.log.debug({ path: requestPath, method: requestMethod }, 'Route not found in database, allowing access')
+      app.log.debug(
+        { path: requestPath, method: requestMethod },
+        'Route not found in database, allowing access'
+      )
       return
     }
 
@@ -127,15 +127,15 @@ async function authPlugin(app: FastifyInstance) {
 
     if (!hasAccess) {
       app.log.warn(
-        { 
-          userId: request.user.userId, 
+        {
+          userId: request.user.userId,
           profileIds: request.user.profileIds,
           route: requestPath,
-          method: requestMethod
-        }, 
+          method: requestMethod,
+        },
         'Access denied - User does not have permission'
       )
-      
+
       return reply.status(403).send({
         statusCode: 403,
         error: 'Forbidden',
@@ -144,11 +144,11 @@ async function authPlugin(app: FastifyInstance) {
     }
 
     app.log.debug(
-      { 
-        userId: request.user.userId, 
+      {
+        userId: request.user.userId,
         profileIds: request.user.profileIds,
-        route: requestPath 
-      }, 
+        route: requestPath,
+      },
       'Access granted'
     )
   })

@@ -17,10 +17,7 @@ export interface ResetPasswordBody {
 }
 
 export class UserController {
-  async requestPasswordReset(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) {
+  async requestPasswordReset(request: FastifyRequest, reply: FastifyReply) {
     const { email } = request.body as RequestPasswordResetBody
 
     const result = await userService.requestPasswordReset({ email })
@@ -28,10 +25,7 @@ export class UserController {
     return reply.status(200).send(result)
   }
 
-  async verifyResetToken(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) {
+  async verifyResetToken(request: FastifyRequest, reply: FastifyReply) {
     const { token } = request.body as VerifyResetTokenBody
 
     const result = await userService.verifyResetToken({ token })
@@ -47,10 +41,7 @@ export class UserController {
     return reply.status(200).send(result)
   }
 
-  async resetPassword(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) {
+  async resetPassword(request: FastifyRequest, reply: FastifyReply) {
     const { token, newPassword } = request.body as ResetPasswordBody
 
     const result = await userService.resetPassword({ token, newPassword })

@@ -11,7 +11,7 @@ import { routeRoutes } from '../modules/route'
 export async function registerRoutes(app: FastifyInstance) {
   // API Documentation
   await app.register(ScalarApiReference, {
-    routePrefix: '/api-docs'
+    routePrefix: '/api-docs',
   })
 
   // Routes

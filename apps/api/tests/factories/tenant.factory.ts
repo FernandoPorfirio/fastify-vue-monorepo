@@ -3,7 +3,7 @@ import { db } from '@/lib/db'
 
 /**
  * Factory para criar dados de Tenant
- * 
+ *
  * Factory PURA: não tem side effects, apenas retorna dados.
  * Para inserir no banco, use o helper insertTenant() explicitamente.
  */
@@ -29,7 +29,7 @@ export function makeTenant(overrides: Partial<TenantData> = {}): TenantData {
 export async function insertTenant(data?: Partial<TenantData>): Promise<TenantRecord> {
   // Using db from @/lib/db
   const tenantData = makeTenant(data)
-  
+
   const [tenant] = await db('tenants').insert(tenantData).returning('*')
   return tenant
 }

@@ -12,7 +12,7 @@ declare module 'fastify' {
 
 const routeController = new RouteController()
 
-const routeRoutes: FastifyPluginAsyncZod = async (app) => {
+const routeRoutes: FastifyPluginAsyncZod = async app => {
   // Create Route (Protected)
   app.post(
     '/route',

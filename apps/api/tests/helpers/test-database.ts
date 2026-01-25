@@ -7,7 +7,7 @@ import { db } from '@/lib/db'
  */
 export async function ensureTestDatabaseExists(): Promise<void> {
   const dbName = process.env.TEST_DB_NAME || 'test_db'
-  
+
   // Conectar ao postgres (banco padrão) para verificar/criar o banco de testes
   const adminDb = knex({
     client: 'pg',
@@ -19,13 +19,10 @@ export async function ensureTestDatabaseExists(): Promise<void> {
       database: 'postgres',
     },
   })
-  
+
   try {
-    const result = await adminDb.raw(
-      "SELECT 1 FROM pg_database WHERE datname = ?",
-      [dbName]
-    )
-    
+    const result = await adminDb.raw('SELECT 1 FROM pg_database WHERE datname = ?', [dbName])
+
     if (result.rows.length === 0) {
       console.log(`Creating test database: ${dbName}...`)
       await adminDb.raw(`CREATE DATABASE ${dbName}`)
@@ -46,9 +43,9 @@ export async function runTestMigrations(): Promise<void> {
     const path = require('path')
     const migrationsDir = path.resolve(__dirname, '../../../migrations/migrations')
     console.log('Migrations directory:', migrationsDir)
-    
+
     await db.migrate.latest({
-      directory: migrationsDir
+      directory: migrationsDir,
     })
     console.log('✓ Migrations executed')
   } catch (error) {

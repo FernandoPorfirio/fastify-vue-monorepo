@@ -4,7 +4,7 @@ import { db } from '@/lib/db'
 
 /**
  * Factory para criar dados de Invite
- * 
+ *
  * Factory PURA: não tem side effects, apenas retorna dados.
  * Para inserir no banco, use o helper insertInvite() explicitamente.
  */
@@ -15,7 +15,7 @@ export function makeInvite(
 ): InviteData {
   const expiresAt = new Date()
   expiresAt.setDate(expiresAt.getDate() + 7) // 7 dias no futuro
-  
+
   return {
     tenant_id: tenantId,
     profile_id: profileId,
@@ -37,7 +37,7 @@ export async function insertInvite(
 ): Promise<InviteRecord> {
   // Using db from @/lib/db
   const inviteData = makeInvite(tenantId, profileId, data)
-  
+
   const [invite] = await db('invites').insert(inviteData).returning('*')
   return invite
 }
@@ -47,12 +47,10 @@ export async function insertInvite(
  */
 export async function acceptInvite(inviteId: number): Promise<void> {
   // Using db from @/lib/db
-  
-  await db('invites')
-    .where({ id: inviteId })
-    .update({
-      accepted_at: new Date(),
-    })
+
+  await db('invites').where({ id: inviteId }).update({
+    accepted_at: new Date(),
+  })
 }
 
 // Types

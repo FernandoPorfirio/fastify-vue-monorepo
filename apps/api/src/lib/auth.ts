@@ -9,7 +9,9 @@ const JWT_EXPIRES_IN: string | number = process.env.JWT_EXPIRES_IN || '15m'
 const REFRESH_TOKEN_EXPIRES_IN = process.env.REFRESH_TOKEN_EXPIRES_IN || '7d'
 
 if (!JWT_SECRET) {
-  throw new Error('JWT_SECRET environment variable is required! Please configure it in your .env file.')
+  throw new Error(
+    'JWT_SECRET environment variable is required! Please configure it in your .env file.'
+  )
 }
 
 // Password hashing
@@ -17,10 +19,7 @@ export async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, SALT_ROUNDS)
 }
 
-export async function verifyPassword(
-  password: string,
-  hash: string
-): Promise<boolean> {
+export async function verifyPassword(password: string, hash: string): Promise<boolean> {
   return bcrypt.compare(password, hash)
 }
 
@@ -49,30 +48,28 @@ export interface RefreshTokenData {
 function getRefreshTokenExpiresAt(): Date {
   const expires = REFRESH_TOKEN_EXPIRES_IN
   const match = /(\d+)([dhm])/.exec(expires)
-  
+
   if (!match) {
     // Default to 7 days
     return new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
   }
-  
+
   const value = Number.parseInt(match[1], 10)
   const unit = match[2]
-  
+
   const multipliers: Record<string, number> = {
     m: 60 * 1000,
     h: 60 * 60 * 1000,
     d: 24 * 60 * 60 * 1000,
   }
-  
+
   return new Date(Date.now() + value * multipliers[unit])
 }
 
-export async function createRefreshToken(
-  data: RefreshTokenData
-): Promise<string> {
+export async function createRefreshToken(data: RefreshTokenData): Promise<string> {
   // Generate random token
   const token = crypto.randomBytes(64).toString('hex')
-  
+
   // Save to database
   await db('refresh_tokens').insert({
     user_id: data.userId,
@@ -82,7 +79,7 @@ export async function createRefreshToken(
     user_agent: data.userAgent,
     created_at: db.fn.now(),
   })
-  
+
   return token
 }
 
@@ -92,18 +89,16 @@ export async function verifyRefreshToken(token: string): Promise<number | null> 
     .whereNull('revoked_at')
     .where('expires_at', '>', db.fn.now())
     .first()
-  
+
   if (!refreshToken) {
     return null
   }
-  
+
   return refreshToken.user_id
 }
 
 export async function revokeRefreshToken(token: string): Promise<void> {
-  await db('refresh_tokens')
-    .where({ token })
-    .update({ revoked_at: db.fn.now() })
+  await db('refresh_tokens').where({ token }).update({ revoked_at: db.fn.now() })
 }
 
 export async function revokeAllUserRefreshTokens(userId: number): Promise<void> {

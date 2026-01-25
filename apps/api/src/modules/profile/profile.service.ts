@@ -76,11 +76,7 @@ export class ProfileService {
     }
   }
 
-  async findAll(filters?: {
-    isActive?: boolean
-    limit?: number
-    offset?: number
-  }) {
+  async findAll(filters?: { isActive?: boolean; limit?: number; offset?: number }) {
     let query = db('profiles')
       .select(
         'id',
@@ -148,48 +144,37 @@ export class ProfileService {
     if (input.description !== undefined) updateData.description = input.description
     if (input.isActive !== undefined) updateData.is_active = input.isActive
 
-    await db('profiles')
-      .where({ id: input.profileId })
-      .update(updateData)
+    await db('profiles').where({ id: input.profileId }).update(updateData)
 
     return this.findById(input.profileId)
   }
 
   async softDelete(profileId: number) {
     // Verificar se profile existe
-    const profile = await db('profiles')
-      .where({ id: profileId })
-      .whereNull('deleted_at')
-      .first()
+    const profile = await db('profiles').where({ id: profileId }).whereNull('deleted_at').first()
 
     if (!profile) {
       return null
     }
 
     // Fazer soft delete do profile
-    await db('profiles')
-      .where({ id: profileId })
-      .update({
-        is_active: false,
-        deleted_at: db.fn.now(),
-        updated_at: db.fn.now(),
-      })
+    await db('profiles').where({ id: profileId }).update({
+      is_active: false,
+      deleted_at: db.fn.now(),
+      updated_at: db.fn.now(),
+    })
 
     // Desativar todos os vínculos com usuários
-    await db('user_profiles')
-      .where({ profile_id: profileId })
-      .update({
-        is_active: false,
-        updated_at: db.fn.now(),
-      })
+    await db('user_profiles').where({ profile_id: profileId }).update({
+      is_active: false,
+      updated_at: db.fn.now(),
+    })
 
     // Desativar todos os vínculos de rotas
-    await db('profile_routes')
-      .where({ profile_id: profileId })
-      .update({
-        is_active: false,
-        updated_at: db.fn.now(),
-      })
+    await db('profile_routes').where({ profile_id: profileId }).update({
+      is_active: false,
+      updated_at: db.fn.now(),
+    })
 
     return {
       message: 'Profile deleted successfully',
@@ -252,12 +237,10 @@ export class ProfileService {
     if (existingLink) {
       // Se existe mas está inativo, reativar
       if (!existingLink.is_active) {
-        await db('user_profiles')
-          .where({ id: existingLink.id })
-          .update({
-            is_active: true,
-            updated_at: db.fn.now(),
-          })
+        await db('user_profiles').where({ id: existingLink.id }).update({
+          is_active: true,
+          updated_at: db.fn.now(),
+        })
 
         return {
           message: 'User profile reactivated',
@@ -295,19 +278,14 @@ export class ProfileService {
     }
 
     // Verificar se usuário existe
-    const user = await db('users')
-      .where({ id: input.userId })
-      .first()
+    const user = await db('users').where({ id: input.userId }).first()
 
     if (!user) {
       return null
     }
 
     // Verificar se tenant existe
-    const tenant = await db('tenants')
-      .where({ id: input.tenantId })
-      .whereNull('deleted_at')
-      .first()
+    const tenant = await db('tenants').where({ id: input.tenantId }).whereNull('deleted_at').first()
 
     if (!tenant) {
       return null
@@ -328,12 +306,10 @@ export class ProfileService {
     }
 
     // Desativar vínculo
-    await db('user_profiles')
-      .where({ id: link.id })
-      .update({
-        is_active: false,
-        updated_at: db.fn.now(),
-      })
+    await db('user_profiles').where({ id: link.id }).update({
+      is_active: false,
+      updated_at: db.fn.now(),
+    })
 
     return {
       message: 'User removed from profile successfully',

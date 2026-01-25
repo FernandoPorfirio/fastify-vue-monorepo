@@ -30,10 +30,7 @@ export interface ListProfilesQuery {
 }
 
 export class ProfileController {
-  async create(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) {
+  async create(request: FastifyRequest, reply: FastifyReply) {
     const body = request.body as CreateProfileBody
 
     const result = await profileService.create(body)
@@ -49,10 +46,7 @@ export class ProfileController {
     return reply.status(201).send(result)
   }
 
-  async findById(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) {
+  async findById(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as ProfileParams
     const profileId = Number.parseInt(id, 10)
 
@@ -77,10 +71,7 @@ export class ProfileController {
     return reply.status(200).send(result)
   }
 
-  async findAll(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) {
+  async findAll(request: FastifyRequest, reply: FastifyReply) {
     const query = request.query as ListProfilesQuery
 
     const filters: any = {}
@@ -102,10 +93,7 @@ export class ProfileController {
     return reply.status(200).send(result)
   }
 
-  async update(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) {
+  async update(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as ProfileParams
     const body = request.body as UpdateProfileBody
     const profileId = Number.parseInt(id, 10)
@@ -134,10 +122,7 @@ export class ProfileController {
     return reply.status(200).send(result)
   }
 
-  async softDelete(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) {
+  async softDelete(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as ProfileParams
     const profileId = Number.parseInt(id, 10)
 
@@ -162,10 +147,7 @@ export class ProfileController {
     return reply.status(200).send(result)
   }
 
-  async addUser(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) {
+  async addUser(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as ProfileParams
     const { userId, tenantId } = request.body as AddUserBody
     const profileId = Number.parseInt(id, 10)
@@ -184,17 +166,15 @@ export class ProfileController {
       return reply.status(400).send({
         statusCode: 400,
         error: 'Bad Request',
-        message: 'Profile not found, user not found, tenant not found, user not linked to tenant, or user already has this profile',
+        message:
+          'Profile not found, user not found, tenant not found, user not linked to tenant, or user already has this profile',
       })
     }
 
     return reply.status(200).send(result)
   }
 
-  async removeUser(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) {
+  async removeUser(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as ProfileParams
     const { userId, tenantId } = request.body as AddUserBody
     const profileId = Number.parseInt(id, 10)
@@ -213,7 +193,8 @@ export class ProfileController {
       return reply.status(400).send({
         statusCode: 400,
         error: 'Bad Request',
-        message: 'Profile not found, user not found, tenant not found, or user does not have this profile',
+        message:
+          'Profile not found, user not found, tenant not found, or user does not have this profile',
       })
     }
 

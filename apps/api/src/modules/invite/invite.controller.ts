@@ -17,10 +17,7 @@ export interface AcceptInviteBody {
 }
 
 export class InviteController {
-  async create(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) {
+  async create(request: FastifyRequest, reply: FastifyReply) {
     const { email, profileId } = request.body as CreateInviteBody
     const user = request.user as JWTPayload
 
@@ -44,17 +41,15 @@ export class InviteController {
       return reply.status(400).send({
         statusCode: 400,
         error: 'Bad Request',
-        message: 'Unable to create invite. Check if the email is already registered or has a pending invite',
+        message:
+          'Unable to create invite. Check if the email is already registered or has a pending invite',
       })
     }
 
     return reply.status(201).send(result)
   }
 
-  async accept(
-    request: FastifyRequest,
-    reply: FastifyReply
-  ) {
+  async accept(request: FastifyRequest, reply: FastifyReply) {
     const { token, email, name, password } = request.body as AcceptInviteBody
 
     const result = await inviteService.acceptInvite({

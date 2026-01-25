@@ -12,7 +12,7 @@ declare module 'fastify' {
 
 const profileController = new ProfileController()
 
-const profileRoutes: FastifyPluginAsyncZod = async (app) => {
+const profileRoutes: FastifyPluginAsyncZod = async app => {
   // Create Profile (Protected)
   app.post(
     '/profile',
