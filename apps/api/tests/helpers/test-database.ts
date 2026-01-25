@@ -40,12 +40,16 @@ export async function ensureTestDatabaseExists(): Promise<void> {
  */
 export async function runTestMigrations(): Promise<void> {
   try {
+    // Register ts-node to allow Knex to execute TypeScript migration files
+    require('ts-node').register({ transpileOnly: true })
+
     const path = require('path')
     const migrationsDir = path.resolve(__dirname, '../../../migrations/migrations')
     console.log('Migrations directory:', migrationsDir)
 
     await db.migrate.latest({
       directory: migrationsDir,
+      extension: 'ts',
     })
     console.log('✓ Migrations executed')
   } catch (error) {

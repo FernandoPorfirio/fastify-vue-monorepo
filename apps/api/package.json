@@ -26,6 +26,7 @@
     "@types/node": "^25.0.9",
     "@vitest/ui": "^4.0.17",
     "dotenv": "^16.6.1",
+    "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "vitest": "^4.0.17"
