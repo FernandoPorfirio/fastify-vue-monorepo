@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "tsx watch --env-file=.env src/server.ts",
     "start": "node dist/server.js",
-    "format": "biome format --write",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "format": "prettier --write \"**/*.{ts,json}\"",
+    "format:check": "prettier --check \"**/*.{ts,json}\"",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "test:ui": "vitest --ui",
@@ -17,7 +20,6 @@
   "license": "ISC",
   "packageManager": "pnpm@10.28.0",
   "devDependencies": {
-    "@biomejs/biome": "2.3.11",
     "@faker-js/faker": "^10.2.0",
     "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.7",
