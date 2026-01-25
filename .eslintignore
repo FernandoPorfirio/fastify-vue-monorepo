@@ -1,0 +1,12 @@
+node_modules
+dist
+build
+coverage
+*.config.js
+*.config.ts
+pnpm-lock.yaml
+.prettierrc
+.eslintrc.json
+vitest.config.ts
+apps/migrations/migrations/*.ts
+apps/migrations/seeds/*.ts
