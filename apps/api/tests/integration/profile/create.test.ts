@@ -36,7 +36,6 @@ describe('POST /profile', () => {
   })
 
   it('should create profile successfully', async () => {
-    // Arrange
     const tenant = await insertTenant()
     createdIds.tenants.push(tenant.id)
 
@@ -56,11 +55,9 @@ describe('POST /profile', () => {
 
     const { token } = JSON.parse(loginResponse.body)
 
-    // Gerar nome único com timestamp
     const uniqueId = Date.now()
     const profileName = `Manager ${uniqueId}`
 
-    // Act
     const response = await app.inject({
       method: 'POST',
       url: '/profile',
@@ -73,7 +70,6 @@ describe('POST /profile', () => {
       },
     })
 
-    // Assert
     expect(response.statusCode).toBe(201)
 
     const body = JSON.parse(response.body)

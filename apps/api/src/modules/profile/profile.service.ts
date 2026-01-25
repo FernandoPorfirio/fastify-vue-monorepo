@@ -26,7 +26,6 @@ export interface RemoveUserFromProfileInput {
 
 export class ProfileService {
   async create(input: CreateProfileInput) {
-    // Verificar se nome já existe
     const existingName = await db('profiles')
       .where({ name: input.name })
       .whereNull('deleted_at')
@@ -68,7 +67,6 @@ export class ProfileService {
       return null
     }
 
-    // Convert dates to ISO strings for JSON serialization
     return {
       ...profile,
       created_at: profile.created_at?.toISOString(),
@@ -104,7 +102,6 @@ export class ProfileService {
 
     const profiles = await query
 
-    // Convert dates to ISO strings for JSON serialization
     return profiles.map(profile => ({
       ...profile,
       created_at: profile.created_at?.toISOString(),
@@ -113,7 +110,6 @@ export class ProfileService {
   }
 
   async update(input: UpdateProfileInput) {
-    // Verificar se profile existe
     const profile = await db('profiles')
       .where({ id: input.profileId })
       .whereNull('deleted_at')
@@ -123,7 +119,6 @@ export class ProfileService {
       return null
     }
 
-    // Verificar nome duplicado se estiver atualizando
     if (input.name && input.name !== profile.name) {
       const existingName = await db('profiles')
         .where({ name: input.name })
@@ -150,27 +145,23 @@ export class ProfileService {
   }
 
   async softDelete(profileId: number) {
-    // Verificar se profile existe
     const profile = await db('profiles').where({ id: profileId }).whereNull('deleted_at').first()
 
     if (!profile) {
       return null
     }
 
-    // Fazer soft delete do profile
     await db('profiles').where({ id: profileId }).update({
       is_active: false,
       deleted_at: db.fn.now(),
       updated_at: db.fn.now(),
     })
 
-    // Desativar todos os vínculos com usuários
     await db('user_profiles').where({ profile_id: profileId }).update({
       is_active: false,
       updated_at: db.fn.now(),
     })
 
-    // Desativar todos os vínculos de rotas
     await db('profile_routes').where({ profile_id: profileId }).update({
       is_active: false,
       updated_at: db.fn.now(),
@@ -182,7 +173,6 @@ export class ProfileService {
   }
 
   async addUser(input: AddUserToProfileInput) {
-    // Verificar se profile existe e está ativo
     const profile = await db('profiles')
       .where({ id: input.profileId, is_active: true })
       .whereNull('deleted_at')
@@ -192,7 +182,6 @@ export class ProfileService {
       return null
     }
 
-    // Verificar se usuário existe e está ativo
     const user = await db('users')
       .where({ id: input.userId, is_active: true })
       .whereNull('deleted_at')
@@ -202,7 +191,6 @@ export class ProfileService {
       return null
     }
 
-    // Verificar se tenant existe e está ativo
     const tenant = await db('tenants')
       .where({ id: input.tenantId, is_active: true })
       .whereNull('deleted_at')
@@ -212,7 +200,6 @@ export class ProfileService {
       return null
     }
 
-    // Verificar se usuário pertence ao tenant
     const tenantUser = await db('tenant_users')
       .where({
         tenant_id: input.tenantId,
@@ -235,7 +222,6 @@ export class ProfileService {
       .first()
 
     if (existingLink) {
-      // Se existe mas está inativo, reativar
       if (!existingLink.is_active) {
         await db('user_profiles').where({ id: existingLink.id }).update({
           is_active: true,
@@ -247,11 +233,9 @@ export class ProfileService {
         }
       }
 
-      // Já está ativo
       return null
     }
 
-    // Criar vínculo
     await db('user_profiles').insert({
       user_id: input.userId,
       profile_id: input.profileId,
@@ -267,7 +251,6 @@ export class ProfileService {
   }
 
   async removeUser(input: RemoveUserFromProfileInput) {
-    // Verificar se profile existe
     const profile = await db('profiles')
       .where({ id: input.profileId })
       .whereNull('deleted_at')
@@ -277,21 +260,18 @@ export class ProfileService {
       return null
     }
 
-    // Verificar se usuário existe
     const user = await db('users').where({ id: input.userId }).first()
 
     if (!user) {
       return null
     }
 
-    // Verificar se tenant existe
     const tenant = await db('tenants').where({ id: input.tenantId }).whereNull('deleted_at').first()
 
     if (!tenant) {
       return null
     }
 
-    // Verificar se vínculo existe e está ativo
     const link = await db('user_profiles')
       .where({
         user_id: input.userId,
@@ -305,7 +285,6 @@ export class ProfileService {
       return null
     }
 
-    // Desativar vínculo
     await db('user_profiles').where({ id: link.id }).update({
       is_active: false,
       updated_at: db.fn.now(),

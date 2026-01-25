@@ -30,7 +30,6 @@ export interface RemoveProfileFromRouteInput {
 
 export class RouteService {
   async create(input: CreateRouteInput) {
-    // Verificar se nome já existe
     const existingName = await db('routes')
       .where({ name: input.name })
       .whereNull('deleted_at')
@@ -40,7 +39,6 @@ export class RouteService {
       return null
     }
 
-    // Verificar se path + method já existe (para rotas API)
     if (input.type === 'api' && input.method) {
       const existingRoute = await db('routes')
         .where({
@@ -93,7 +91,6 @@ export class RouteService {
       return null
     }
 
-    // Convert dates to ISO strings for JSON serialization
     return {
       ...route,
       created_at: route.created_at?.toISOString(),
@@ -146,7 +143,6 @@ export class RouteService {
 
     const routes = await query
 
-    // Convert dates to ISO strings for JSON serialization
     return routes.map(route => ({
       ...route,
       created_at: route.created_at?.toISOString(),
@@ -155,14 +151,12 @@ export class RouteService {
   }
 
   async update(input: UpdateRouteInput) {
-    // Verificar se route existe
     const route = await db('routes').where({ id: input.routeId }).whereNull('deleted_at').first()
 
     if (!route) {
       return null
     }
 
-    // Verificar nome duplicado se estiver atualizando
     if (input.name && input.name !== route.name) {
       const existingName = await db('routes')
         .where({ name: input.name })
@@ -175,7 +169,6 @@ export class RouteService {
       }
     }
 
-    // Verificar path + method duplicado se estiver atualizando
     if (input.path || input.method) {
       const checkPath = input.path || route.path
       const checkMethod = input.method || route.method
@@ -214,21 +207,18 @@ export class RouteService {
   }
 
   async softDelete(routeId: number) {
-    // Verificar se route existe
     const route = await db('routes').where({ id: routeId }).whereNull('deleted_at').first()
 
     if (!route) {
       return null
     }
 
-    // Fazer soft delete da route
     await db('routes').where({ id: routeId }).update({
       is_active: false,
       deleted_at: db.fn.now(),
       updated_at: db.fn.now(),
     })
 
-    // Desativar todos os vínculos com profiles
     await db('profile_routes').where({ route_id: routeId }).update({
       is_active: false,
       updated_at: db.fn.now(),
@@ -240,7 +230,6 @@ export class RouteService {
   }
 
   async addProfile(input: AddProfileToRouteInput) {
-    // Verificar se route existe e está ativa
     const route = await db('routes')
       .where({ id: input.routeId, is_active: true })
       .whereNull('deleted_at')
@@ -250,7 +239,6 @@ export class RouteService {
       return null
     }
 
-    // Verificar se profile existe e está ativo
     const profile = await db('profiles')
       .where({ id: input.profileId, is_active: true })
       .whereNull('deleted_at')
@@ -260,7 +248,6 @@ export class RouteService {
       return null
     }
 
-    // Verificar se já existe vínculo
     const existingLink = await db('profile_routes')
       .where({
         profile_id: input.profileId,
@@ -269,7 +256,6 @@ export class RouteService {
       .first()
 
     if (existingLink) {
-      // Se existe mas está inativo, reativar
       if (!existingLink.is_active) {
         await db('profile_routes').where({ id: existingLink.id }).update({
           is_active: true,
@@ -281,11 +267,9 @@ export class RouteService {
         }
       }
 
-      // Já está ativo
       return null
     }
 
-    // Criar vínculo
     await db('profile_routes').insert({
       profile_id: input.profileId,
       route_id: input.routeId,
@@ -300,14 +284,12 @@ export class RouteService {
   }
 
   async removeProfile(input: RemoveProfileFromRouteInput) {
-    // Verificar se route existe
     const route = await db('routes').where({ id: input.routeId }).whereNull('deleted_at').first()
 
     if (!route) {
       return null
     }
 
-    // Verificar se profile existe
     const profile = await db('profiles')
       .where({ id: input.profileId })
       .whereNull('deleted_at')
@@ -317,7 +299,6 @@ export class RouteService {
       return null
     }
 
-    // Verificar se vínculo existe e está ativo
     const link = await db('profile_routes')
       .where({
         profile_id: input.profileId,
@@ -330,7 +311,6 @@ export class RouteService {
       return null
     }
 
-    // Desativar vínculo
     await db('profile_routes').where({ id: link.id }).update({
       is_active: false,
       updated_at: db.fn.now(),

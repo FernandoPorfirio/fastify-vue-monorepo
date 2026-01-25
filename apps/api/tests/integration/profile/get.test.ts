@@ -38,7 +38,6 @@ describe('GET /profile/:id and GET /profile', () => {
 
   describe('GET /profile/:id', () => {
     it('should get profile by id successfully', async () => {
-      // Arrange
       const tenant = await insertTenant()
       createdIds.tenants.push(tenant.id)
 
@@ -61,7 +60,6 @@ describe('GET /profile/:id and GET /profile', () => {
 
       const { token } = JSON.parse(loginResponse.body)
 
-      // Act
       const response = await app.inject({
         method: 'GET',
         url: `/profile/${profile.id}`,
@@ -70,7 +68,6 @@ describe('GET /profile/:id and GET /profile', () => {
         },
       })
 
-      // Assert
       expect(response.statusCode).toBe(200)
 
       const body = JSON.parse(response.body)
@@ -90,7 +87,6 @@ describe('GET /profile/:id and GET /profile', () => {
 
   describe('GET /profile', () => {
     it('should list profiles successfully', async () => {
-      // Arrange
       const tenant = await insertTenant()
       createdIds.tenants.push(tenant.id)
 
@@ -113,7 +109,6 @@ describe('GET /profile/:id and GET /profile', () => {
 
       const { token } = JSON.parse(loginResponse.body)
 
-      // Act
       const response = await app.inject({
         method: 'GET',
         url: '/profile',
@@ -122,7 +117,6 @@ describe('GET /profile/:id and GET /profile', () => {
         },
       })
 
-      // Assert
       expect(response.statusCode).toBe(200)
 
       const body = JSON.parse(response.body)

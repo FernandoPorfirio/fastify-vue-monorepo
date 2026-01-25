@@ -32,7 +32,6 @@ describe('POST /tenant', () => {
   })
 
   it('should create tenant successfully', async () => {
-    // Arrange - Criar usuário autenticado
     const tenant = await insertTenant()
     createdIds.tenants.push(tenant.id)
 
@@ -52,12 +51,10 @@ describe('POST /tenant', () => {
 
     const { token } = JSON.parse(loginResponse.body)
 
-    // Gerar valores únicos com timestamp
     const uniqueId = Date.now()
     const tenantName = `New Tenant ${uniqueId}`
     const tenantSlug = `new-tenant-${uniqueId}`
 
-    // Act
     const response = await app.inject({
       method: 'POST',
       url: '/tenant',
@@ -72,7 +69,6 @@ describe('POST /tenant', () => {
       },
     })
 
-    // Assert
     expect(response.statusCode).toBe(201)
 
     const body = JSON.parse(response.body)
@@ -81,7 +77,6 @@ describe('POST /tenant', () => {
     expect(body.slug).toBe(tenantSlug)
     expect(body.plan).toBe('starter')
 
-    // Adicionar aos IDs para cleanup
     createdIds.tenants.push(body.id)
   })
 
@@ -127,7 +122,6 @@ describe('POST /tenant', () => {
       },
       payload: {
         name: 'Incomplete Tenant',
-        // Missing slug and ownerEmail
       },
     })
 

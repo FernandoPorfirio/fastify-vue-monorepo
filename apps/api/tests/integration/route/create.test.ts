@@ -36,7 +36,6 @@ describe('POST /route', () => {
   })
 
   it('should create route successfully', async () => {
-    // Arrange
     const tenant = await insertTenant()
     createdIds.tenants.push(tenant.id)
 
@@ -56,12 +55,10 @@ describe('POST /route', () => {
 
     const { token } = JSON.parse(loginResponse.body)
 
-    // Gerar dados únicos para evitar conflitos
     const uniqueId = Date.now()
     const routeName = `Users List ${uniqueId}`
     const routePath = `/api/users/${uniqueId}`
 
-    // Act
     const response = await app.inject({
       method: 'POST',
       url: '/route',
@@ -77,7 +74,6 @@ describe('POST /route', () => {
       },
     })
 
-    // Assert
     expect(response.statusCode).toBe(201)
 
     const body = JSON.parse(response.body)

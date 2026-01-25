@@ -13,7 +13,6 @@ declare module 'fastify' {
 const profileController = new ProfileController()
 
 const profileRoutes: FastifyPluginAsyncZod = async app => {
-  // Create Profile (Protected)
   app.post(
     '/profile',
     {
@@ -46,7 +45,6 @@ const profileRoutes: FastifyPluginAsyncZod = async app => {
     profileController.create.bind(profileController)
   )
 
-  // Get Profile by ID (Protected)
   app.get(
     '/profile/:id',
     {
@@ -83,7 +81,6 @@ const profileRoutes: FastifyPluginAsyncZod = async app => {
     profileController.findById.bind(profileController)
   )
 
-  // List Profiles (Protected)
   app.get(
     '/profile',
     {
@@ -114,7 +111,6 @@ const profileRoutes: FastifyPluginAsyncZod = async app => {
     profileController.findAll.bind(profileController)
   )
 
-  // Update Profile (Protected)
   app.patch(
     '/profile/:id',
     {
@@ -151,7 +147,6 @@ const profileRoutes: FastifyPluginAsyncZod = async app => {
     profileController.update.bind(profileController)
   )
 
-  // Soft Delete Profile (Protected)
   app.delete(
     '/profile/:id',
     {
@@ -182,7 +177,6 @@ const profileRoutes: FastifyPluginAsyncZod = async app => {
     profileController.softDelete.bind(profileController)
   )
 
-  // Add User to Profile (Protected)
   app.post(
     '/profile/:id/user',
     {
@@ -212,7 +206,6 @@ const profileRoutes: FastifyPluginAsyncZod = async app => {
     profileController.addUser.bind(profileController)
   )
 
-  // Remove User from Profile (Protected)
   app.delete(
     '/profile/:id/user',
     {

@@ -33,7 +33,6 @@ describe('GET /tenant/:id and GET /tenant', () => {
 
   describe('GET /tenant/:id', () => {
     it('should get tenant by id successfully', async () => {
-      // Arrange
       const tenant = await insertTenant()
       createdIds.tenants.push(tenant.id)
 
@@ -53,7 +52,6 @@ describe('GET /tenant/:id and GET /tenant', () => {
 
       const { token } = JSON.parse(loginResponse.body)
 
-      // Act
       const response = await app.inject({
         method: 'GET',
         url: `/tenant/${tenant.id}`,
@@ -62,7 +60,6 @@ describe('GET /tenant/:id and GET /tenant', () => {
         },
       })
 
-      // Assert
       expect(response.statusCode).toBe(200)
 
       const body = JSON.parse(response.body)
@@ -85,7 +82,6 @@ describe('GET /tenant/:id and GET /tenant', () => {
 
   describe('GET /tenant', () => {
     it('should list tenants successfully', async () => {
-      // Arrange
       const tenant = await insertTenant()
       createdIds.tenants.push(tenant.id)
 
@@ -105,7 +101,6 @@ describe('GET /tenant/:id and GET /tenant', () => {
 
       const { token } = JSON.parse(loginResponse.body)
 
-      // Act
       const response = await app.inject({
         method: 'GET',
         url: '/tenant',
@@ -114,7 +109,6 @@ describe('GET /tenant/:id and GET /tenant', () => {
         },
       })
 
-      // Assert
       expect(response.statusCode).toBe(200)
 
       const body = JSON.parse(response.body)

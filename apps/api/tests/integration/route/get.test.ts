@@ -38,7 +38,6 @@ describe('GET /route/:id and GET /route', () => {
 
   describe('GET /route/:id', () => {
     it('should get route by id successfully', async () => {
-      // Arrange
       const tenant = await insertTenant()
       createdIds.tenants.push(tenant.id)
 
@@ -61,7 +60,6 @@ describe('GET /route/:id and GET /route', () => {
 
       const { token } = JSON.parse(loginResponse.body)
 
-      // Act
       const response = await app.inject({
         method: 'GET',
         url: `/route/${route.id}`,
@@ -70,7 +68,6 @@ describe('GET /route/:id and GET /route', () => {
         },
       })
 
-      // Assert
       expect(response.statusCode).toBe(200)
 
       const body = JSON.parse(response.body)
@@ -91,7 +88,6 @@ describe('GET /route/:id and GET /route', () => {
 
   describe('GET /route', () => {
     it('should list routes successfully', async () => {
-      // Arrange
       const tenant = await insertTenant()
       createdIds.tenants.push(tenant.id)
 
@@ -114,7 +110,6 @@ describe('GET /route/:id and GET /route', () => {
 
       const { token } = JSON.parse(loginResponse.body)
 
-      // Act
       const response = await app.inject({
         method: 'GET',
         url: '/route',
@@ -123,7 +118,6 @@ describe('GET /route/:id and GET /route', () => {
         },
       })
 
-      // Assert
       expect(response.statusCode).toBe(200)
 
       const body = JSON.parse(response.body)

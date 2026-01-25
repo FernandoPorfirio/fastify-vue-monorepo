@@ -37,7 +37,6 @@ describe('POST /invite', () => {
   })
 
   it('should create invite successfully', async () => {
-    // Arrange
     const tenant = await insertTenant()
     createdIds.tenants.push(tenant.id)
 
@@ -60,11 +59,9 @@ describe('POST /invite', () => {
 
     const { token } = JSON.parse(loginResponse.body)
 
-    // Gerar email único com timestamp
     const uniqueId = Date.now()
     const inviteEmail = `newuser-${uniqueId}@example.com`
 
-    // Act
     const response = await app.inject({
       method: 'POST',
       url: '/invite',
@@ -77,7 +74,6 @@ describe('POST /invite', () => {
       },
     })
 
-    // Assert
     expect(response.statusCode).toBe(201)
 
     const body = JSON.parse(response.body)

@@ -83,7 +83,7 @@ export class RouteController {
 
     const filters: {
       isActive?: boolean
-      type?: string
+      type?: 'api' | 'frontend'
       method?: string
       limit?: number
       offset?: number
@@ -93,8 +93,8 @@ export class RouteController {
       filters.isActive = query.isActive === 'true'
     }
 
-    if (query.type) {
-      filters.type = query.type
+    if (query.type && (query.type === 'api' || query.type === 'frontend')) {
+      filters.type = query.type as 'api' | 'frontend'
     }
 
     if (query.method) {

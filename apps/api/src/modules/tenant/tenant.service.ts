@@ -34,7 +34,6 @@ export interface RemoveUserFromTenantInput {
 
 export class TenantService {
   async create(input: CreateTenantInput) {
-    // Verificar se slug já existe
     const existingSlug = await db('tenants')
       .where({ slug: input.slug })
       .whereNull('deleted_at')
@@ -44,7 +43,6 @@ export class TenantService {
       return null
     }
 
-    // Verificar se domain já existe (se fornecido)
     if (input.domain) {
       const existingDomain = await db('tenants')
         .where({ domain: input.domain })
@@ -98,7 +96,6 @@ export class TenantService {
       return null
     }
 
-    // Convert dates to ISO strings for JSON serialization
     return {
       ...tenant,
       created_at: tenant.created_at?.toISOString(),
@@ -143,7 +140,6 @@ export class TenantService {
 
     const tenants = await query
 
-    // Convert dates to ISO strings for JSON serialization
     return tenants.map(tenant => ({
       ...tenant,
       created_at: tenant.created_at?.toISOString(),
@@ -152,14 +148,12 @@ export class TenantService {
   }
 
   async update(input: UpdateTenantInput) {
-    // Verificar se tenant existe
     const tenant = await db('tenants').where({ id: input.tenantId }).whereNull('deleted_at').first()
 
     if (!tenant) {
       return null
     }
 
-    // Verificar slug duplicado se estiver atualizando
     if (input.slug && input.slug !== tenant.slug) {
       const existingSlug = await db('tenants')
         .where({ slug: input.slug })
@@ -172,7 +166,6 @@ export class TenantService {
       }
     }
 
-    // Verificar domain duplicado se estiver atualizando
     if (input.domain && input.domain !== tenant.domain) {
       const existingDomain = await db('tenants')
         .where({ domain: input.domain })
@@ -205,27 +198,23 @@ export class TenantService {
   }
 
   async softDelete(tenantId: number) {
-    // Verificar se tenant existe
     const tenant = await db('tenants').where({ id: tenantId }).whereNull('deleted_at').first()
 
     if (!tenant) {
       return null
     }
 
-    // Fazer soft delete do tenant
     await db('tenants').where({ id: tenantId }).update({
       is_active: false,
       deleted_at: db.fn.now(),
       updated_at: db.fn.now(),
     })
 
-    // Desativar todos os vínculos com usuários
     await db('tenant_users').where({ tenant_id: tenantId }).update({
       is_active: false,
       updated_at: db.fn.now(),
     })
 
-    // Desativar todos os perfis de usuário neste tenant
     await db('user_profiles').where({ tenant_id: tenantId }).update({
       is_active: false,
       updated_at: db.fn.now(),
@@ -237,7 +226,6 @@ export class TenantService {
   }
 
   async addUser(input: AddUserToTenantInput) {
-    // Verificar se tenant existe e está ativo
     const tenant = await db('tenants')
       .where({ id: input.tenantId, is_active: true })
       .whereNull('deleted_at')
@@ -247,7 +235,6 @@ export class TenantService {
       return null
     }
 
-    // Verificar se usuário existe e está ativo
     const user = await db('users')
       .where({ id: input.userId, is_active: true })
       .whereNull('deleted_at')
@@ -257,7 +244,6 @@ export class TenantService {
       return null
     }
 
-    // Verificar se já existe vínculo
     const existingLink = await db('tenant_users')
       .where({
         tenant_id: input.tenantId,
@@ -266,7 +252,6 @@ export class TenantService {
       .first()
 
     if (existingLink) {
-      // Se existe mas está inativo, reativar
       if (!existingLink.is_active) {
         await db('tenant_users').where({ id: existingLink.id }).update({
           is_active: true,
@@ -278,11 +263,9 @@ export class TenantService {
         }
       }
 
-      // Já está ativo
       return null
     }
 
-    // Verificar limite de usuários
     const userCount = await db('tenant_users')
       .where({ tenant_id: input.tenantId, is_active: true })
       .count('* as count')
@@ -292,7 +275,6 @@ export class TenantService {
       return null
     }
 
-    // Criar vínculo
     await db('tenant_users').insert({
       tenant_id: input.tenantId,
       user_id: input.userId,
@@ -307,21 +289,18 @@ export class TenantService {
   }
 
   async removeUser(input: RemoveUserFromTenantInput) {
-    // Verificar se tenant existe
     const tenant = await db('tenants').where({ id: input.tenantId }).whereNull('deleted_at').first()
 
     if (!tenant) {
       return null
     }
 
-    // Verificar se usuário existe
     const user = await db('users').where({ id: input.userId }).first()
 
     if (!user) {
       return null
     }
 
-    // Verificar se vínculo existe e está ativo
     const link = await db('tenant_users')
       .where({
         tenant_id: input.tenantId,
@@ -334,13 +313,11 @@ export class TenantService {
       return null
     }
 
-    // Desativar vínculo
     await db('tenant_users').where({ id: link.id }).update({
       is_active: false,
       updated_at: db.fn.now(),
     })
 
-    // Desativar todos os perfis do usuário neste tenant
     await db('user_profiles')
       .where({
         tenant_id: input.tenantId,

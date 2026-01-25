@@ -32,7 +32,6 @@ describe('POST /auth/logout', () => {
   })
 
   it('should logout successfully with valid token', async () => {
-    // Arrange
     const tenant = await insertTenant()
     createdIds.tenants.push(tenant.id)
 
@@ -41,7 +40,6 @@ describe('POST /auth/logout', () => {
     })
     createdIds.users.push(user.id)
 
-    // Login para obter token
     const loginResponse = await app.inject({
       method: 'POST',
       url: '/auth/login',
@@ -53,7 +51,6 @@ describe('POST /auth/logout', () => {
 
     const { token, refreshToken } = JSON.parse(loginResponse.body)
 
-    // Act - Logout
     const response = await app.inject({
       method: 'POST',
       url: '/auth/logout',
@@ -65,7 +62,6 @@ describe('POST /auth/logout', () => {
       },
     })
 
-    // Assert
     expect(response.statusCode).toBe(200)
   })
 
