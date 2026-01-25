@@ -6,6 +6,7 @@ const config: { [key: string]: Knex.Config } = {
     client: 'pg',
     connection: {
       host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT) || 5432,
       user: process.env.DB_USER,
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
@@ -23,6 +24,7 @@ const config: { [key: string]: Knex.Config } = {
     client: 'pg',
     connection: {
       host: process.env.TEST_DB_HOST || 'localhost',
+      port: Number(process.env.TEST_DB_PORT) || 5432,
       user: process.env.TEST_DB_USER || 'postgres',
       password: process.env.TEST_DB_PASS || 'postgres',
       database: process.env.TEST_DB_NAME || 'test_db',
