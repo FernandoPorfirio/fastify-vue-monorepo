@@ -31,7 +31,7 @@ export async function seed(knex: Knex): Promise<void> {
     .insert({
       id: 1,
       email: 'admin@example.com',
-      password: '$2b$10$K8QVz4zF4zF4zF4zF4zF4.hVZGvBqZdJYQZYQZYQZYQZYQZYQZYQZ.', // admin123
+      password: '$2b$10$eIdjFQL5TBLL/H7hLwUvt.EUSSTDVbCaFMqUQZ/XR.XwsKTV6oOya', // admin123
       name: 'Admin User',
       is_active: true,
       email_verified: true,

@@ -373,7 +373,6 @@ export async function seed(knex: Knex): Promise<void> {
   const profileRoutes = protectedRouteIds.map(routeId => ({
     profile_id: 1, // admin profile
     route_id: routeId,
-    is_active: true,
     created_at: knex.fn.now(),
     updated_at: knex.fn.now(),
   }))
